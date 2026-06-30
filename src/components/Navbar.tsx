@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import { translations } from "../data/translations";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { lang, toggle } = useLang();
   const t = translations[lang];
+  const { user, logout, openAuth } = useAuth();
 
   const links = [
     { href: "#rychly-start", label: t.nav.quickStart },
@@ -39,7 +41,7 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={toggle}
@@ -62,12 +64,29 @@ export default function Navbar() {
               EN
             </span>
           </button>
-          <a
-            href="#rychly-start"
-            className="hidden rounded-full border border-navy/30 px-5 py-2 text-xs tracking-[0.14em] text-navy transition-colors hover:bg-navy hover:text-ivory sm:inline-block"
-          >
-            {t.nav.cta}
-          </a>
+
+          {user ? (
+            <div className="hidden items-center gap-2 sm:flex">
+              <span className="rounded-full bg-navy/8 px-3 py-1.5 text-[10px] tracking-[0.1em] text-navy">
+                {t.auth.tier[user.tier].toUpperCase()}
+              </span>
+              <button
+                type="button"
+                onClick={logout}
+                className="text-xs tracking-wide text-charcoal/50 transition-colors hover:text-navy"
+              >
+                {t.auth.logoutCta}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={openAuth}
+              className="hidden rounded-full border border-navy/30 px-5 py-2 text-xs tracking-[0.14em] text-navy transition-colors hover:bg-navy hover:text-ivory sm:inline-block"
+            >
+              {t.auth.login.toUpperCase()}
+            </button>
+          )}
         </div>
       </nav>
     </motion.header>

@@ -13,6 +13,14 @@ export type Palette = {
   swatches: Swatch[];
 };
 
+export const FREE_PALETTE_IDS = new Set([
+  "hamptons-cream",
+  "english-countryside",
+  "burgundy-estate",
+  "yacht-club-navy",
+  "tweed-oak",
+]);
+
 export const palettes: Palette[] = [
   {
     id: "hamptons-cream",

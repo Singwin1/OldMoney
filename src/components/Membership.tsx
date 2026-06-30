@@ -2,16 +2,23 @@ import { motion } from "framer-motion";
 import SectionReveal from "./SectionReveal";
 import { useLang } from "../context/LanguageContext";
 import { translations } from "../data/translations";
+import { useAuth } from "../context/AuthContext";
 
 const tiersMeta = [
   { price: null, highlighted: false },
   { price: "249 Kč", highlighted: true },
-  { price: "890 Kč", highlighted: false },
 ] as const;
 
 export default function Membership() {
   const { lang } = useLang();
   const t = translations[lang].membership;
+  const { user, openAuth } = useAuth();
+
+  const handleAtelier = () => {
+    if (!user || user.tier === "free") {
+      openAuth();
+    }
+  };
 
   return (
     <section id="clenstvi" className="bg-navy px-6 py-28 sm:px-10">
@@ -26,11 +33,13 @@ export default function Membership() {
           </p>
         </SectionReveal>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 sm:grid-cols-2">
           {tiersMeta.map((meta, i) => {
             const tierT = t.tiers[i];
             const price = meta.price ?? t.free;
             const priceSub = meta.price ? t.month : undefined;
+            const isAtelier = i === 1;
+            const isActive = isAtelier && user && user.tier !== "free";
 
             return (
               <SectionReveal key={tierT.name} delay={i * 0.1}>
@@ -107,13 +116,18 @@ export default function Membership() {
 
                   <button
                     type="button"
+                    onClick={isAtelier ? handleAtelier : undefined}
                     className={`w-full rounded-full py-3 text-sm tracking-[0.1em] transition-colors duration-300 ${
-                      meta.highlighted
-                        ? "bg-navy text-ivory hover:bg-navy-light"
+                      isActive
+                        ? "border border-camel/50 bg-camel/10 text-camel cursor-default"
+                        : meta.highlighted
+                        ? "bg-navy text-ivory hover:bg-navy/85"
                         : "border border-ivory/25 text-ivory hover:border-tan hover:text-tan"
                     }`}
                   >
-                    {tierT.cta}
+                    {isActive
+                      ? translations[lang].auth.tier.atelier
+                      : tierT.cta}
                   </button>
                 </motion.div>
               </SectionReveal>

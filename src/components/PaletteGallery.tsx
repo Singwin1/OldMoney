@@ -1,8 +1,9 @@
-import { palettes } from "../data/palettes";
+import { palettes, FREE_PALETTE_IDS } from "../data/palettes";
 import PaletteCard from "./PaletteCard";
 import SectionReveal from "./SectionReveal";
 import { useLang } from "../context/LanguageContext";
 import { translations } from "../data/translations";
+import { useAuth } from "../context/AuthContext";
 
 type PaletteGalleryProps = {
   activePaletteId: string;
@@ -15,6 +16,12 @@ export default function PaletteGallery({
 }: PaletteGalleryProps) {
   const { lang } = useLang();
   const t = translations[lang].palettes;
+  const { user, openAuth } = useAuth();
+
+  const isLocked = (paletteId: string) => {
+    if (FREE_PALETTE_IDS.has(paletteId)) return false;
+    return !user || user.tier === "free";
+  };
 
   return (
     <section id="palety" className="bg-ivory px-6 py-28 sm:px-10">
@@ -37,7 +44,9 @@ export default function PaletteGallery({
               <PaletteCard
                 palette={palette}
                 active={palette.id === activePaletteId}
+                locked={isLocked(palette.id)}
                 onSelect={onSelect}
+                onUnlock={openAuth}
               />
             </SectionReveal>
           ))}
