@@ -74,7 +74,7 @@ export default function Hero() {
           className="mt-10 flex flex-col gap-4 sm:flex-row"
         >
           <a
-            href="#styler"
+            href="#rychly-start"
             className="rounded-full bg-navy px-8 py-3.5 text-sm tracking-[0.12em] text-ivory shadow-sm transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg"
           >
             SESTAVIT OUTFIT

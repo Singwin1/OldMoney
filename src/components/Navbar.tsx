@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 
 const links = [
+  { href: "#rychly-start", label: "Rychlý start" },
   { href: "#palety", label: "Palety" },
   { href: "#styler", label: "Styler" },
-  { href: "#o-projektu", label: "O projektu" },
+  { href: "#clenstvi", label: "Atelier" },
 ];
 
 export default function Navbar() {
@@ -34,10 +35,10 @@ export default function Navbar() {
           ))}
         </ul>
         <a
-          href="#styler"
+          href="#rychly-start"
           className="hidden rounded-full border border-navy/30 px-5 py-2 text-xs tracking-[0.14em] text-navy transition-colors hover:bg-navy hover:text-ivory sm:inline-block"
         >
-          VYZKOUŠET STYLER
+          ZAČÍT
         </a>
       </nav>
     </motion.header>

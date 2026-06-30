@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import QuickBuilder from "./components/QuickBuilder";
 import PaletteGallery from "./components/PaletteGallery";
 import OutfitStyler from "./components/OutfitStyler";
+import Membership from "./components/Membership";
 import Footer from "./components/Footer";
 import { palettes } from "./data/palettes";
 
@@ -13,6 +15,7 @@ function App() {
     <div className="min-h-screen bg-ivory">
       <Navbar />
       <Hero />
+      <QuickBuilder />
       <PaletteGallery
         activePaletteId={activePaletteId}
         onSelect={setActivePaletteId}
@@ -21,6 +24,7 @@ function App() {
         activePaletteId={activePaletteId}
         onSelectPalette={setActivePaletteId}
       />
+      <Membership />
       <Footer />
     </div>
   );
