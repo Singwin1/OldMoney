@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { categories, outfitPieces } from "../data/outfits";
-import type { Category, Gender } from "../data/outfits";
+import type { Category, Gender, Season } from "../data/outfits";
 import { palettes } from "../data/palettes";
 import GenderSwitch from "./GenderSwitch";
 import OutfitPieceCard from "./OutfitPieceCard";
@@ -14,6 +14,16 @@ type OutfitStylerProps = {
   onSelectPalette: (id: string) => void;
 };
 
+function getCurrentSeason(): Season {
+  const m = new Date().getMonth();
+  if (m >= 2 && m <= 4) return "spring";
+  if (m >= 5 && m <= 8) return "summer";
+  if (m >= 9 && m <= 10) return "autumn";
+  return "winter";
+}
+
+const seasonOrder: Season[] = ["spring", "summer", "autumn", "winter"];
+
 function pickRandom<T>(items: T[], exclude?: T): T {
   if (items.length === 1) return items[0];
   const pool = exclude ? items.filter((i) => i !== exclude) : items;
@@ -25,12 +35,13 @@ export default function OutfitStyler({
   onSelectPalette,
 }: OutfitStylerProps) {
   const [gender, setGender] = useState<Gender>("women");
+  const [season, setSeason] = useState<Season>(getCurrentSeason);
   const [selection, setSelection] = useState<Record<Category, string>>(
     {} as Record<Category, string>
   );
 
   const { lang } = useLang();
-  const t = translations[lang].styler;
+  const t = translations[lang];
 
   const grouped = useMemo(() => {
     const map = {} as Record<Category, typeof outfitPieces>;
@@ -39,11 +50,12 @@ export default function OutfitStyler({
         (p) =>
           p.gender === gender &&
           p.category === category.id &&
-          p.paletteIds.includes(activePaletteId)
+          p.paletteIds.includes(activePaletteId) &&
+          p.seasons.includes(season)
       );
     }
     return map;
-  }, [gender, activePaletteId]);
+  }, [gender, activePaletteId, season]);
 
   useEffect(() => {
     setSelection((prev) => {
@@ -73,6 +85,8 @@ export default function OutfitStyler({
     });
   };
 
+  const hasAnyPieces = categories.some((c) => grouped[c.id]?.length > 0);
+
   return (
     <section
       id="styler"
@@ -81,13 +95,13 @@ export default function OutfitStyler({
       <div className="mx-auto max-w-6xl">
         <SectionReveal className="mb-12 flex flex-col items-center text-center">
           <span className="text-xs tracking-[0.35em] text-camel">
-            {t.eyebrow}
+            {t.styler.eyebrow}
           </span>
           <h2 className="mt-4 font-serif-display text-4xl text-navy sm:text-5xl">
-            {t.title}
+            {t.styler.title}
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-charcoal/70">
-            {t.body}
+            {t.styler.body}
           </p>
         </SectionReveal>
 
@@ -97,6 +111,25 @@ export default function OutfitStyler({
         >
           <GenderSwitch value={gender} onChange={setGender} />
 
+          {/* Season selector */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {seasonOrder.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSeason(s)}
+                className={`rounded-full border px-5 py-1.5 text-xs tracking-[0.12em] transition-colors duration-300 ${
+                  season === s
+                    ? "border-camel bg-camel/10 text-navy font-medium"
+                    : "border-charcoal/15 text-charcoal/60 hover:border-camel/50 hover:text-navy"
+                }`}
+              >
+                {t.seasons[s]}
+              </button>
+            ))}
+          </div>
+
+          {/* Palette chips */}
           <div className="flex flex-wrap items-center justify-center gap-3">
             {palettes.map((palette) => (
               <button
@@ -128,7 +161,8 @@ export default function OutfitStyler({
             onClick={handleShuffle}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.03 }}
-            className="group mt-2 inline-flex items-center gap-2 rounded-full bg-burgundy px-7 py-3 text-sm tracking-[0.12em] text-ivory shadow-sm transition-shadow hover:shadow-lg"
+            disabled={!hasAnyPieces}
+            className="group mt-2 inline-flex items-center gap-2 rounded-full bg-burgundy px-7 py-3 text-sm tracking-[0.12em] text-ivory shadow-sm transition-shadow hover:shadow-lg disabled:opacity-40"
           >
             <motion.svg
               viewBox="0 0 16 16"
@@ -153,31 +187,47 @@ export default function OutfitStyler({
                 strokeLinejoin="round"
               />
             </motion.svg>
-            {t.generate}
+            {t.styler.generate}
           </motion.button>
         </SectionReveal>
 
         {activePalette && (
           <AnimatePresence mode="wait">
-            <motion.div
-              key={`${gender}-${activePaletteId}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35 }}
-              className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5"
-            >
-              <AnimatePresence mode="popLayout">
-                {categories.map((category) => {
-                  const pieceId = selection[category.id];
-                  const piece = grouped[category.id]?.find(
-                    (p) => p.id === pieceId
-                  );
-                  if (!piece) return null;
-                  return <OutfitPieceCard key={piece.id} piece={piece} />;
-                })}
-              </AnimatePresence>
-            </motion.div>
+            {hasAnyPieces ? (
+              <motion.div
+                key={`${gender}-${activePaletteId}-${season}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35 }}
+                className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5"
+              >
+                <AnimatePresence mode="popLayout">
+                  {categories.map((category) => {
+                    const pieceId = selection[category.id];
+                    const piece = grouped[category.id]?.find(
+                      (p) => p.id === pieceId
+                    );
+                    if (!piece) return null;
+                    return <OutfitPieceCard key={piece.id} piece={piece} />;
+                  })}
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col items-center gap-3 py-16 text-center"
+              >
+                <p className="font-serif-display text-2xl text-navy">
+                  {t.seasons.emptyTitle}
+                </p>
+                <p className="text-sm text-charcoal/55">{t.seasons.emptyBody}</p>
+              </motion.div>
+            )}
           </AnimatePresence>
         )}
       </div>

@@ -102,6 +102,15 @@ export const translations = {
       nahrdelnik: "Náhrdelník",
       prsten: "Prsten",
     },
+    seasons: {
+      label: "Roční období",
+      spring: "Jaro",
+      summer: "Léto",
+      autumn: "Podzim",
+      winter: "Zima",
+      emptyTitle: "Pro tuto kombinaci není outfit k dispozici",
+      emptyBody: "Zkuste jiné roční období nebo paletu.",
+    },
   },
 
   en: {
@@ -206,6 +215,15 @@ export const translations = {
       boty: "Shoes",
       nahrdelnik: "Necklace",
       prsten: "Ring",
+    },
+    seasons: {
+      label: "Season",
+      spring: "Spring",
+      summer: "Summer",
+      autumn: "Autumn",
+      winter: "Winter",
+      emptyTitle: "No outfit available for this combination",
+      emptyBody: "Try a different season or palette.",
     },
   },
 } as const;
