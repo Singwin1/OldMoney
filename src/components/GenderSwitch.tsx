@@ -1,17 +1,22 @@
 import { motion } from "framer-motion";
 import type { Gender } from "../data/outfits";
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 type GenderSwitchProps = {
   value: Gender;
   onChange: (gender: Gender) => void;
 };
 
-const options: { id: Gender; label: string }[] = [
-  { id: "women", label: "Dámský" },
-  { id: "men", label: "Pánský" },
-];
-
 export default function GenderSwitch({ value, onChange }: GenderSwitchProps) {
+  const { lang } = useLang();
+  const t = translations[lang].styler;
+
+  const options: { id: Gender; label: string }[] = [
+    { id: "women", label: t.women },
+    { id: "men", label: t.men },
+  ];
+
   return (
     <div className="inline-flex rounded-full border border-charcoal/15 bg-cream/50 p-1">
       {options.map((option) => {

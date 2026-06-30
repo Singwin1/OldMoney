@@ -1,0 +1,213 @@
+export const translations = {
+  cs: {
+    nav: {
+      quickStart: "Rychlý start",
+      palettes: "Palety",
+      styler: "Styler",
+      membership: "Atelier",
+      cta: "ZAČÍT",
+    },
+    hero: {
+      eyebrow: "QUIET LUXURY · PRO MUŽE I ŽENY",
+      headingLine1: "Styling v duchu",
+      headingLine2: "starých peněz",
+      body: "Najděte svou barevnou paletu a sestavte si nadčasový old money outfit — minimalisticky, elegantně, bez zbytečného křiku.",
+      cta: "SESTAVIT OUTFIT",
+      ctaSecondary: "PROHLÉDNOUT PALETY",
+    },
+    quickBuilder: {
+      eyebrow: "RYCHLÝ START",
+      title: "Začněte u jednoho kusu",
+      body: "Vyberte hlavní prvek outfitu, zvolte jeho barvu a my vám navrhneme pět nejlépe sedících barevných kombinací.",
+      colorQuestion: "Jakou barvu má mít",
+      topLabel: "TOP 5 KOMBINACÍ",
+      topTitle: "Nejlépe sedící barevné palety k vaší volbě",
+      bestMatch: "NEJLEPŠÍ SHODA",
+      yourColor: "VAŠE BARVA",
+      reset: "Začít znovu",
+    },
+    palettes: {
+      eyebrow: "BAREVNÉ PALETY",
+      title: "Pět nálad starých peněz",
+      body: "Každá paleta vychází z konkrétního prostředí — od letní rezidence po knihovnu s krbem. Vyberte tu svou a styler níže ji promítne do konkrétního outfitu.",
+    },
+    styler: {
+      eyebrow: "OUTFIT STYLER",
+      title: "Sestavte si svůj look",
+      body: "Zvolte pohlaví a paletu — styler navrhne kompletní look po kategoriích. Tlačítkem níže vygenerujete novou variantu.",
+      women: "Dámský",
+      men: "Pánský",
+      generate: "GENEROVAT LOOK",
+    },
+    membership: {
+      eyebrow: "ATELIER",
+      title: "Zvolte si svou úroveň",
+      body: "Od bezplatného startu až po osobní concierge — každá úroveň přináší víc z estetiky starých peněz.",
+      free: "Zdarma",
+      month: "/ měsíc",
+      mostPopular: "Nejoblíbenější",
+      tiers: [
+        {
+          name: "Capsule",
+          tag: "Ideální na start",
+          features: [
+            "5 barevných palet",
+            "Outfit styler (dámský & pánský)",
+            "Rychlý start dle hlavního kusu",
+            "Barevné kombinace",
+          ],
+          cta: "Začít zdarma",
+        },
+        {
+          name: "Atelier",
+          features: [
+            "Vše z Capsule",
+            "Ukládání oblíbených looků",
+            "Rozšířené palety (15+)",
+            "Sezónní kolekce (jaro / zima…)",
+            "Bez reklam",
+          ],
+          cta: "Vyzkoušet Atelier",
+        },
+        {
+          name: "Concierge",
+          tag: "Osobní servis",
+          features: [
+            "Vše z Atelier",
+            "Osobní stylista (1× měsíčně)",
+            "Kurátorovaný nákupní seznam",
+            "Prémiová podpora",
+            "Early access na nové funkce",
+          ],
+          cta: "Kontaktovat Concierge",
+        },
+      ],
+    },
+    footer: {
+      tagline:
+        "Tichý luxus se nehlásí o slovo. Jde o materiál, střih a barvy, které vydrží déle než trend.",
+    },
+    categories: {
+      outerwear: "SVRCHNÍ VRSTVA",
+      top: "VRCHNÍ DÍL",
+      bottom: "SPODNÍ DÍL",
+      shoes: "OBUV",
+      accessory: "DOPLNĚK",
+    },
+    items: {
+      tricko: "Tričko",
+      kratasy: "Kraťasy",
+      kalhoty: "Kalhoty",
+      boty: "Boty",
+      nahrdelnik: "Náhrdelník",
+      prsten: "Prsten",
+    },
+  },
+
+  en: {
+    nav: {
+      quickStart: "Quick Start",
+      palettes: "Palettes",
+      styler: "Styler",
+      membership: "Atelier",
+      cta: "START",
+    },
+    hero: {
+      eyebrow: "QUIET LUXURY · FOR MEN & WOMEN",
+      headingLine1: "Styling in the spirit",
+      headingLine2: "of old money",
+      body: "Find your color palette and build a timeless old money outfit — minimally, elegantly, without unnecessary noise.",
+      cta: "BUILD YOUR OUTFIT",
+      ctaSecondary: "EXPLORE PALETTES",
+    },
+    quickBuilder: {
+      eyebrow: "QUICK START",
+      title: "Start with one piece",
+      body: "Choose the main element of your outfit, pick its color, and we'll suggest five best-matching color combinations.",
+      colorQuestion: "What color should your",
+      topLabel: "TOP 5 COMBINATIONS",
+      topTitle: "Best matching palettes for your choice",
+      bestMatch: "BEST MATCH",
+      yourColor: "YOUR COLOR",
+      reset: "Start over",
+    },
+    palettes: {
+      eyebrow: "COLOR PALETTES",
+      title: "Five moods of old money",
+      body: "Each palette draws from a specific setting — from a summer residence to a library by the fireplace. Select yours and the styler below will translate it into a complete outfit.",
+    },
+    styler: {
+      eyebrow: "OUTFIT STYLER",
+      title: "Build your look",
+      body: "Choose gender and palette — the styler will suggest a complete look by category. Click below to generate a new variant.",
+      women: "Women",
+      men: "Men",
+      generate: "GENERATE LOOK",
+    },
+    membership: {
+      eyebrow: "ATELIER",
+      title: "Choose your tier",
+      body: "From a free start to personal concierge — every tier brings more from the aesthetics of old money.",
+      free: "Free",
+      month: "/ month",
+      mostPopular: "Most popular",
+      tiers: [
+        {
+          name: "Capsule",
+          tag: "Perfect to start",
+          features: [
+            "5 color palettes",
+            "Outfit styler (women & men)",
+            "Quick start from any main piece",
+            "Color combinations",
+          ],
+          cta: "Start for free",
+        },
+        {
+          name: "Atelier",
+          features: [
+            "Everything in Capsule",
+            "Save favourite looks",
+            "Extended palettes (15+)",
+            "Seasonal collections (spring / winter…)",
+            "Ad-free",
+          ],
+          cta: "Try Atelier",
+        },
+        {
+          name: "Concierge",
+          tag: "Personal service",
+          features: [
+            "Everything in Atelier",
+            "Personal stylist (1× per month)",
+            "Curated shopping list",
+            "Premium support",
+            "Early access to new features",
+          ],
+          cta: "Contact Concierge",
+        },
+      ],
+    },
+    footer: {
+      tagline:
+        "Quiet luxury doesn't announce itself. It's about material, cut, and colors that outlast any trend.",
+    },
+    categories: {
+      outerwear: "OUTERWEAR",
+      top: "TOP",
+      bottom: "BOTTOM",
+      shoes: "SHOES",
+      accessory: "ACCESSORY",
+    },
+    items: {
+      tricko: "T-Shirt",
+      kratasy: "Shorts",
+      kalhoty: "Trousers",
+      boty: "Shoes",
+      nahrdelnik: "Necklace",
+      prsten: "Ring",
+    },
+  },
+} as const;
+
+export type Translations = typeof translations.cs;

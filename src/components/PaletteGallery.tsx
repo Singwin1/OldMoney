@@ -1,6 +1,8 @@
 import { palettes } from "../data/palettes";
 import PaletteCard from "./PaletteCard";
 import SectionReveal from "./SectionReveal";
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 type PaletteGalleryProps = {
   activePaletteId: string;
@@ -11,20 +13,21 @@ export default function PaletteGallery({
   activePaletteId,
   onSelect,
 }: PaletteGalleryProps) {
+  const { lang } = useLang();
+  const t = translations[lang].palettes;
+
   return (
     <section id="palety" className="bg-ivory px-6 py-28 sm:px-10">
       <div className="mx-auto max-w-6xl">
         <SectionReveal className="mb-16 max-w-2xl">
           <span className="text-xs tracking-[0.35em] text-camel">
-            BAREVNÉ PALETY
+            {t.eyebrow}
           </span>
           <h2 className="mt-4 font-serif-display text-4xl text-navy sm:text-5xl">
-            Pět nálad starých peněz
+            {t.title}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-charcoal/70">
-            Každá paleta vychází z konkrétního prostředí — od letní rezidence
-            po knihovnu s krbem. Vyberte tu svou a styler níže ji promítne do
-            konkrétního outfitu.
+            {t.body}
           </p>
         </SectionReveal>
 

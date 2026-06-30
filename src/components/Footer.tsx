@@ -1,6 +1,11 @@
 import SectionReveal from "./SectionReveal";
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 export default function Footer() {
+  const { lang } = useLang();
+  const t = translations[lang].footer;
+
   return (
     <footer
       id="o-projektu"
@@ -12,8 +17,7 @@ export default function Footer() {
             OLD&nbsp;MONEY
           </span>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ivory/65">
-            Tichý luxus se nehlásí o slovo. Jde o materiál, střih a barvy,
-            které vydrží déle než trend.
+            {t.tagline}
           </p>
         </SectionReveal>
         <div className="mt-10 h-px w-16 bg-gold/40" />

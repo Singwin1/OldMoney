@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import type { Palette } from "../data/palettes";
+import { useLang } from "../context/LanguageContext";
 
 type PaletteCardProps = {
   palette: Palette;
@@ -12,6 +13,10 @@ export default function PaletteCard({
   active,
   onSelect,
 }: PaletteCardProps) {
+  const { lang } = useLang();
+  const tagline = lang === "en" ? palette.taglineEn : palette.tagline;
+  const description = lang === "en" ? palette.descriptionEn : palette.description;
+
   return (
     <motion.button
       type="button"
@@ -39,10 +44,10 @@ export default function PaletteCard({
         {palette.name}
       </h3>
       <p className="mt-1 text-xs tracking-[0.12em] text-camel uppercase">
-        {palette.tagline}
+        {tagline}
       </p>
       <p className="mt-3 text-sm leading-relaxed text-charcoal/70">
-        {palette.description}
+        {description}
       </p>
 
       {active && (

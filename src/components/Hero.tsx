@@ -1,4 +1,6 @@
 import { motion, type Variants } from "framer-motion";
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 const container: Variants = {
   hidden: {},
@@ -17,12 +19,14 @@ const item: Variants = {
 };
 
 export default function Hero() {
+  const { lang } = useLang();
+  const t = translations[lang].hero;
+
   return (
     <section
       id="top"
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ivory px-6 pt-24"
     >
-      {/* decorative background */}
       <div className="pointer-events-none absolute inset-0">
         <motion.div
           className="absolute left-1/2 top-1/2 h-[60vmax] w-[60vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-camel/20"
@@ -49,24 +53,23 @@ export default function Hero() {
           variants={item}
           className="mb-6 text-xs tracking-[0.4em] text-camel"
         >
-          QUIET LUXURY &middot; PRO MUŽE I ŽENY
+          {t.eyebrow}
         </motion.span>
 
         <motion.h1
           variants={item}
           className="font-serif-display text-5xl leading-[1.05] text-navy sm:text-6xl md:text-7xl"
         >
-          Styling v duchu
+          {t.headingLine1}
           <br />
-          <span className="italic text-burgundy">starých peněz</span>
+          <span className="italic text-burgundy">{t.headingLine2}</span>
         </motion.h1>
 
         <motion.p
           variants={item}
           className="mt-7 max-w-xl text-balance text-base leading-relaxed text-charcoal/70 sm:text-lg"
         >
-          Najděte svou barevnou paletu a sestavte si nadčasový old money
-          outfit — minimalisticky, elegantně, bez zbytečného křiku.
+          {t.body}
         </motion.p>
 
         <motion.div
@@ -77,13 +80,13 @@ export default function Hero() {
             href="#rychly-start"
             className="rounded-full bg-navy px-8 py-3.5 text-sm tracking-[0.12em] text-ivory shadow-sm transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg"
           >
-            SESTAVIT OUTFIT
+            {t.cta}
           </a>
           <a
             href="#palety"
             className="rounded-full border border-charcoal/20 px-8 py-3.5 text-sm tracking-[0.12em] text-charcoal transition-colors duration-300 hover:border-camel hover:text-camel"
           >
-            PROHLÉDNOUT PALETY
+            {t.ctaSecondary}
           </a>
         </motion.div>
       </motion.div>

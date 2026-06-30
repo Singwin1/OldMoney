@@ -7,26 +7,29 @@ import OutfitStyler from "./components/OutfitStyler";
 import Membership from "./components/Membership";
 import Footer from "./components/Footer";
 import { palettes } from "./data/palettes";
+import { LanguageProvider } from "./context/LanguageContext";
 
 function App() {
   const [activePaletteId, setActivePaletteId] = useState(palettes[0].id);
 
   return (
-    <div className="min-h-screen bg-ivory">
-      <Navbar />
-      <Hero />
-      <QuickBuilder />
-      <PaletteGallery
-        activePaletteId={activePaletteId}
-        onSelect={setActivePaletteId}
-      />
-      <OutfitStyler
-        activePaletteId={activePaletteId}
-        onSelectPalette={setActivePaletteId}
-      />
-      <Membership />
-      <Footer />
-    </div>
+    <LanguageProvider>
+      <div className="min-h-screen bg-ivory">
+        <Navbar />
+        <Hero />
+        <QuickBuilder />
+        <PaletteGallery
+          activePaletteId={activePaletteId}
+          onSelect={setActivePaletteId}
+        />
+        <OutfitStyler
+          activePaletteId={activePaletteId}
+          onSelectPalette={setActivePaletteId}
+        />
+        <Membership />
+        <Footer />
+      </div>
+    </LanguageProvider>
   );
 }
 

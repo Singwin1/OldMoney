@@ -1,13 +1,18 @@
 import { motion } from "framer-motion";
-
-const links = [
-  { href: "#rychly-start", label: "Rychlý start" },
-  { href: "#palety", label: "Palety" },
-  { href: "#styler", label: "Styler" },
-  { href: "#clenstvi", label: "Atelier" },
-];
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 export default function Navbar() {
+  const { lang, toggle } = useLang();
+  const t = translations[lang];
+
+  const links = [
+    { href: "#rychly-start", label: t.nav.quickStart },
+    { href: "#palety", label: t.nav.palettes },
+    { href: "#styler", label: t.nav.styler },
+    { href: "#clenstvi", label: t.nav.membership },
+  ];
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -16 }}
@@ -34,12 +39,36 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <a
-          href="#rychly-start"
-          className="hidden rounded-full border border-navy/30 px-5 py-2 text-xs tracking-[0.14em] text-navy transition-colors hover:bg-navy hover:text-ivory sm:inline-block"
-        >
-          ZAČÍT
-        </a>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label="Toggle language"
+            className="flex items-center gap-1.5 text-xs tracking-[0.15em] transition-opacity hover:opacity-80"
+          >
+            <span
+              className={`transition-colors ${
+                lang === "cs" ? "font-medium text-navy" : "text-charcoal/35"
+              }`}
+            >
+              CS
+            </span>
+            <span className="select-none text-charcoal/20">|</span>
+            <span
+              className={`transition-colors ${
+                lang === "en" ? "font-medium text-navy" : "text-charcoal/35"
+              }`}
+            >
+              EN
+            </span>
+          </button>
+          <a
+            href="#rychly-start"
+            className="hidden rounded-full border border-navy/30 px-5 py-2 text-xs tracking-[0.14em] text-navy transition-colors hover:bg-navy hover:text-ivory sm:inline-block"
+          >
+            {t.nav.cta}
+          </a>
+        </div>
       </nav>
     </motion.header>
   );

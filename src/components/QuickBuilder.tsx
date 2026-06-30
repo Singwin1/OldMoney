@@ -7,6 +7,8 @@ import type { Swatch } from "../data/palettes";
 import { colorDistance } from "../utils/color";
 import ItemIcon from "./ItemIcon";
 import SectionReveal from "./SectionReveal";
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 const uniqueColors: Swatch[] = Array.from(
   new Map(
@@ -18,7 +20,11 @@ export default function QuickBuilder() {
   const [itemId, setItemId] = useState<ItemId | null>(null);
   const [color, setColor] = useState<Swatch | null>(null);
 
-  const selectedItemLabel = mainItems.find((i) => i.id === itemId)?.label;
+  const { lang } = useLang();
+  const t = translations[lang].quickBuilder;
+
+  const selectedItem = mainItems.find((i) => i.id === itemId);
+  const selectedItemLabel = lang === "en" ? selectedItem?.labelEn : selectedItem?.label;
 
   const ranked = useMemo(() => {
     if (!color) return [];
@@ -57,14 +63,13 @@ export default function QuickBuilder() {
       <div className="mx-auto max-w-5xl">
         <SectionReveal className="mb-14 flex flex-col items-center text-center">
           <span className="text-xs tracking-[0.35em] text-camel">
-            RYCHLÝ START
+            {t.eyebrow}
           </span>
           <h2 className="mt-4 font-serif-display text-4xl text-navy sm:text-5xl">
-            Začněte u jednoho kusu
+            {t.title}
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-charcoal/70">
-            Vyberte hlavní prvek outfitu, zvolte jeho barvu a my vám
-            navrhneme pět nejlépe sedících barevných kombinací.
+            {t.body}
           </p>
         </SectionReveal>
 
@@ -72,6 +77,7 @@ export default function QuickBuilder() {
           <div className="flex flex-wrap items-start justify-center gap-x-8 gap-y-10 sm:gap-x-10">
             {mainItems.map((item, i) => {
               const active = item.id === itemId;
+              const label = lang === "en" ? item.labelEn : item.label;
               return (
                 <motion.button
                   key={item.id}
@@ -105,7 +111,7 @@ export default function QuickBuilder() {
                       active ? "text-navy font-medium" : "text-charcoal/60"
                     }`}
                   >
-                    {item.label}
+                    {label}
                   </span>
                 </motion.button>
               );
@@ -125,8 +131,13 @@ export default function QuickBuilder() {
             >
               <div className="flex flex-col items-center text-center">
                 <p className="text-sm tracking-wide text-charcoal/70">
-                  Jakou barvu má mít{" "}
-                  <span className="text-navy">{selectedItemLabel?.toLowerCase()}</span>?
+                  {t.colorQuestion}{" "}
+                  <span className="text-navy">
+                    {lang === "cs"
+                      ? selectedItemLabel?.toLowerCase()
+                      : selectedItemLabel}
+                  </span>
+                  {lang === "cs" ? "?" : " be?"}
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-4">
                   {uniqueColors.map((swatch) => {
@@ -166,63 +177,67 @@ export default function QuickBuilder() {
             >
               <div className="mb-8 flex flex-col items-center gap-3 text-center">
                 <span className="text-xs tracking-[0.3em] text-camel">
-                  TOP 5 KOMBINACÍ
+                  {t.topLabel}
                 </span>
                 <h3 className="font-serif-display text-2xl text-navy sm:text-3xl">
-                  Nejlépe sedící barevné palety k vaší volbě
+                  {t.topTitle}
                 </h3>
                 <button
                   type="button"
                   onClick={handleReset}
                   className="mt-1 text-xs tracking-wide text-charcoal/50 underline-offset-4 hover:text-burgundy hover:underline"
                 >
-                  Začít znovu
+                  {t.reset}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {ranked.map(({ palette, closest }, index) => (
-                  <motion.div
-                    key={palette.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: index * 0.06 }}
-                    className="overflow-hidden rounded-2xl border border-charcoal/10 bg-cream/40 p-6 shadow-sm"
-                  >
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="text-[10px] tracking-[0.16em] text-camel">
-                        {index === 0 ? "NEJLEPŠÍ SHODA" : `#${index + 1}`}
-                      </span>
-                    </div>
-                    <div className="mb-5 flex h-12 overflow-hidden rounded-lg">
-                      {palette.swatches.map((swatch) => {
-                        const isMatch = swatch.hex === closest.hex;
-                        return (
-                          <div
-                            key={swatch.name}
-                            className="relative h-full flex-1"
-                            style={{
-                              backgroundColor: isMatch ? color.hex : swatch.hex,
-                            }}
-                          >
-                            {isMatch && (
-                              <span className="absolute inset-x-0 bottom-0 bg-navy/80 py-0.5 text-center text-[8px] tracking-wide text-ivory">
-                                VAŠE BARVA
-                              </span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <h4 className="font-serif-display text-xl text-navy">
-                      {palette.name}
-                    </h4>
-                    <p className="mt-1 text-sm leading-relaxed text-charcoal/65">
-                      {palette.description}
-                    </p>
-                  </motion.div>
-                ))}
+                {ranked.map(({ palette, closest }, index) => {
+                  const description =
+                    lang === "en" ? palette.descriptionEn : palette.description;
+                  return (
+                    <motion.div
+                      key={palette.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.96 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4, delay: index * 0.06 }}
+                      className="overflow-hidden rounded-2xl border border-charcoal/10 bg-cream/40 p-6 shadow-sm"
+                    >
+                      <div className="mb-4 flex items-center justify-between">
+                        <span className="text-[10px] tracking-[0.16em] text-camel">
+                          {index === 0 ? t.bestMatch : `#${index + 1}`}
+                        </span>
+                      </div>
+                      <div className="mb-5 flex h-12 overflow-hidden rounded-lg">
+                        {palette.swatches.map((swatch) => {
+                          const isMatch = swatch.hex === closest.hex;
+                          return (
+                            <div
+                              key={swatch.name}
+                              className="relative h-full flex-1"
+                              style={{
+                                backgroundColor: isMatch ? color.hex : swatch.hex,
+                              }}
+                            >
+                              {isMatch && (
+                                <span className="absolute inset-x-0 bottom-0 bg-navy/80 py-0.5 text-center text-[8px] tracking-wide text-ivory">
+                                  {t.yourColor}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <h4 className="font-serif-display text-xl text-navy">
+                        {palette.name}
+                      </h4>
+                      <p className="mt-1 text-sm leading-relaxed text-charcoal/65">
+                        {description}
+                      </p>
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           )}

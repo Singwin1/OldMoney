@@ -6,6 +6,8 @@ import { palettes } from "../data/palettes";
 import GenderSwitch from "./GenderSwitch";
 import OutfitPieceCard from "./OutfitPieceCard";
 import SectionReveal from "./SectionReveal";
+import { useLang } from "../context/LanguageContext";
+import { translations } from "../data/translations";
 
 type OutfitStylerProps = {
   activePaletteId: string;
@@ -26,6 +28,9 @@ export default function OutfitStyler({
   const [selection, setSelection] = useState<Record<Category, string>>(
     {} as Record<Category, string>
   );
+
+  const { lang } = useLang();
+  const t = translations[lang].styler;
 
   const grouped = useMemo(() => {
     const map = {} as Record<Category, typeof outfitPieces>;
@@ -76,14 +81,13 @@ export default function OutfitStyler({
       <div className="mx-auto max-w-6xl">
         <SectionReveal className="mb-12 flex flex-col items-center text-center">
           <span className="text-xs tracking-[0.35em] text-camel">
-            OUTFIT STYLER
+            {t.eyebrow}
           </span>
           <h2 className="mt-4 font-serif-display text-4xl text-navy sm:text-5xl">
-            Sestavte si svůj look
+            {t.title}
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-charcoal/70">
-            Zvolte pohlaví a paletu — styler navrhne kompletní look po
-            kategoriích. Tlačítkem níže vygenerujete novou variantu.
+            {t.body}
           </p>
         </SectionReveal>
 
@@ -149,7 +153,7 @@ export default function OutfitStyler({
                 strokeLinejoin="round"
               />
             </motion.svg>
-            GENEROVAT LOOK
+            {t.generate}
           </motion.button>
         </SectionReveal>
 

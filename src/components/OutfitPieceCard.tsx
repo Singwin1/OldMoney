@@ -1,13 +1,18 @@
 import { motion } from "framer-motion";
 import type { OutfitPiece } from "../data/outfits";
 import { categories } from "../data/outfits";
+import { useLang } from "../context/LanguageContext";
 
 type OutfitPieceCardProps = {
   piece: OutfitPiece;
 };
 
 export default function OutfitPieceCard({ piece }: OutfitPieceCardProps) {
-  const label = categories.find((c) => c.id === piece.category)?.label;
+  const { lang } = useLang();
+  const cat = categories.find((c) => c.id === piece.category);
+  const label = lang === "en" ? cat?.labelEn : cat?.label;
+  const name = lang === "en" ? piece.nameEn : piece.name;
+  const fabric = lang === "en" ? piece.fabricEn : piece.fabric;
 
   return (
     <motion.div
@@ -29,12 +34,8 @@ export default function OutfitPieceCard({ piece }: OutfitPieceCardProps) {
         </span>
       </div>
       <div className="p-5">
-        <h4 className="font-serif-display text-xl text-navy">
-          {piece.name}
-        </h4>
-        <p className="mt-1 text-xs tracking-wide text-charcoal/55">
-          {piece.fabric}
-        </p>
+        <h4 className="font-serif-display text-xl text-navy">{name}</h4>
+        <p className="mt-1 text-xs tracking-wide text-charcoal/55">{fabric}</p>
       </div>
     </motion.div>
   );
