@@ -1,0 +1,13 @@
+export function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  return [r, g, b];
+}
+
+export function colorDistance(hexA: string, hexB: string): number {
+  const [r1, g1, b1] = hexToRgb(hexA);
+  const [r2, g2, b2] = hexToRgb(hexB);
+  return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+}
