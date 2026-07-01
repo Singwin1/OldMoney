@@ -20,11 +20,26 @@ const AuthContext = createContext<AuthContextValue>({} as AuthContextValue);
 const KEY_USERS = "om_users";
 const KEY_SESSION = "om_session";
 
+const DEV_SEEDS: StoredUsers = {
+  "kozielmatyas@gmail.com": { password: "M4ts0n3k420!!", tier: "concierge" },
+};
+
 function getUsers(): StoredUsers {
   try {
-    return JSON.parse(localStorage.getItem(KEY_USERS) ?? "{}");
+    const stored = JSON.parse(localStorage.getItem(KEY_USERS) ?? "{}") as StoredUsers;
+    // Ensure dev seeds are always present (merge without overwriting user-changed records)
+    let changed = false;
+    for (const [email, seed] of Object.entries(DEV_SEEDS)) {
+      if (!stored[email]) {
+        stored[email] = seed;
+        changed = true;
+      }
+    }
+    if (changed) localStorage.setItem(KEY_USERS, JSON.stringify(stored));
+    return stored;
   } catch {
-    return {};
+    localStorage.setItem(KEY_USERS, JSON.stringify(DEV_SEEDS));
+    return { ...DEV_SEEDS };
   }
 }
 
