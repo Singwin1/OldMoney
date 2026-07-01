@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { translations } from "../data/translations";
 import { useAuth } from "../context/AuthContext";
@@ -7,6 +8,7 @@ export default function Navbar() {
   const { lang, toggle } = useLang();
   const t = translations[lang];
   const { user, logout, openAuth } = useAuth();
+  const navigate = useNavigate();
 
   const links = [
     { href: "#rychly-start", label: t.nav.quickStart },
@@ -14,6 +16,8 @@ export default function Navbar() {
     { href: "#styler", label: t.nav.styler },
     { href: "#clenstvi", label: t.nav.membership },
   ];
+
+  const isAdmin = user?.tier === "concierge";
 
   return (
     <motion.header
@@ -23,12 +27,13 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 border-b border-charcoal/10 bg-ivory/80 backdrop-blur-md"
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-10">
-        <a
-          href="#top"
+        <Link
+          to="/"
           className="font-serif-display text-xl tracking-[0.18em] text-navy"
         >
           OLD&nbsp;MONEY
-        </a>
+        </Link>
+
         <ul className="hidden gap-10 text-sm tracking-wide text-charcoal/80 sm:flex">
           {links.map((link) => (
             <li key={link.href}>
@@ -40,7 +45,18 @@ export default function Navbar() {
               </a>
             </li>
           ))}
+          {isAdmin && (
+            <li>
+              <Link
+                to="/admin"
+                className="relative text-camel transition-colors hover:text-navy after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-camel after:transition-all after:duration-300 hover:after:w-full"
+              >
+                Admin
+              </Link>
+            </li>
+          )}
         </ul>
+
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -48,19 +64,11 @@ export default function Navbar() {
             aria-label="Toggle language"
             className="flex items-center gap-1.5 text-xs tracking-[0.15em] transition-opacity hover:opacity-80"
           >
-            <span
-              className={`transition-colors ${
-                lang === "cs" ? "font-medium text-navy" : "text-charcoal/35"
-              }`}
-            >
+            <span className={`transition-colors ${lang === "cs" ? "font-medium text-navy" : "text-charcoal/35"}`}>
               CS
             </span>
             <span className="select-none text-charcoal/20">|</span>
-            <span
-              className={`transition-colors ${
-                lang === "en" ? "font-medium text-navy" : "text-charcoal/35"
-              }`}
-            >
+            <span className={`transition-colors ${lang === "en" ? "font-medium text-navy" : "text-charcoal/35"}`}>
               EN
             </span>
           </button>
@@ -70,10 +78,19 @@ export default function Navbar() {
               <span className="rounded-full bg-navy/8 px-3 py-1.5 text-[10px] tracking-[0.1em] text-navy">
                 {t.auth.tier[user.tier].toUpperCase()}
               </span>
+              {user.tier === "free" && (
+                <button
+                  type="button"
+                  onClick={() => navigate("/platba")}
+                  className="rounded-full border border-camel/50 bg-camel/8 px-4 py-1.5 text-[10px] tracking-[0.12em] text-camel transition-colors hover:bg-camel hover:text-ivory"
+                >
+                  {lang === "cs" ? "UPGRADE" : "UPGRADE"}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={logout}
-                className="text-xs tracking-wide text-charcoal/50 transition-colors hover:text-navy"
+                className="text-xs tracking-wide text-charcoal/45 transition-colors hover:text-navy"
               >
                 {t.auth.logoutCta}
               </button>

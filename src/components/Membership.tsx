@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import SectionReveal from "./SectionReveal";
 import { useLang } from "../context/LanguageContext";
 import { translations } from "../data/translations";
@@ -6,17 +7,22 @@ import { useAuth } from "../context/AuthContext";
 
 const tiersMeta = [
   { price: null, highlighted: false },
-  { price: "249 Kč", highlighted: true },
+  { price: "499 Kč", highlighted: true },
 ] as const;
 
 export default function Membership() {
   const { lang } = useLang();
   const t = translations[lang].membership;
   const { user, openAuth } = useAuth();
+  const navigate = useNavigate();
 
   const handleAtelier = () => {
-    if (!user || user.tier === "free") {
+    if (!user) {
       openAuth();
+      return;
+    }
+    if (user.tier === "free") {
+      navigate("/platba");
     }
   };
 
@@ -59,55 +65,31 @@ export default function Membership() {
                   )}
 
                   <div className="mb-6">
-                    <h3
-                      className={`font-serif-display text-2xl ${
-                        meta.highlighted ? "text-navy" : "text-ivory"
-                      }`}
-                    >
+                    <h3 className={`font-serif-display text-2xl ${meta.highlighted ? "text-navy" : "text-ivory"}`}>
                       {tierT.name}
                     </h3>
                     <div className="mt-3 flex items-end gap-1">
-                      <span
-                        className={`font-serif-display text-4xl ${
-                          meta.highlighted ? "text-navy" : "text-tan"
-                        }`}
-                      >
+                      <span className={`font-serif-display text-4xl ${meta.highlighted ? "text-navy" : "text-tan"}`}>
                         {price}
                       </span>
-                      {priceSub && (
-                        <span
-                          className={`pb-1 text-sm ${
-                            meta.highlighted ? "text-charcoal/60" : "text-ivory/50"
-                          }`}
-                        >
+                      {priceSub ? (
+                        <span className={`pb-1 text-sm ${meta.highlighted ? "text-charcoal/60" : "text-ivory/50"}`}>
                           {priceSub}
                         </span>
-                      )}
+                      ) : null}
                     </div>
+                    {isAtelier && (
+                      <p className={`mt-1.5 text-[11px] tracking-[0.06em] ${meta.highlighted ? "text-charcoal/45" : "text-ivory/40"}`}>
+                        {lang === "cs" ? "jednorázová platba" : "one-time payment"}
+                      </p>
+                    )}
                   </div>
 
                   <ul className="mb-8 flex-1 space-y-3">
                     {tierT.features.map((feat) => (
-                      <li
-                        key={feat}
-                        className={`flex items-start gap-2.5 text-sm leading-snug ${
-                          meta.highlighted ? "text-charcoal/75" : "text-ivory/70"
-                        }`}
-                      >
-                        <svg
-                          viewBox="0 0 14 14"
-                          className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
-                            meta.highlighted ? "text-camel" : "text-tan"
-                          }`}
-                          fill="none"
-                        >
-                          <path
-                            d="M2.5 7l3 3L11.5 4"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
+                      <li key={feat} className={`flex items-start gap-2.5 text-sm leading-snug ${meta.highlighted ? "text-charcoal/75" : "text-ivory/70"}`}>
+                        <svg viewBox="0 0 14 14" className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${meta.highlighted ? "text-camel" : "text-tan"}`} fill="none">
+                          <path d="M2.5 7l3 3L11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                         {feat}
                       </li>
@@ -125,9 +107,7 @@ export default function Membership() {
                         : "border border-ivory/25 text-ivory hover:border-tan hover:text-tan"
                     }`}
                   >
-                    {isActive
-                      ? translations[lang].auth.tier.atelier
-                      : tierT.cta}
+                    {isActive ? translations[lang].auth.tier.atelier : tierT.cta}
                   </button>
                 </motion.div>
               </SectionReveal>
