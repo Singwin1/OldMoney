@@ -5,7 +5,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { supabase } from "../lib/supabase";
+import { supabase, supabaseReady } from "../lib/supabase";
 
 export type Tier = "free" | "atelier" | "concierge";
 export type User = { id: string; email: string; tier: Tier };
@@ -43,13 +43,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const tier = await fetchTier(session.user.id);
-        setUser({ id: session.user.id, email: session.user.email!, tier });
-      }
+    if (!supabaseReady) {
       setLoading(false);
-    });
+      return;
+    }
+
+    supabase.auth
+      .getSession()
+      .then(async ({ data: { session } }) => {
+        if (session?.user) {
+          const tier = await fetchTier(session.user.id);
+          setUser({ id: session.user.id, email: session.user.email!, tier });
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
 
     const {
       data: { subscription },
