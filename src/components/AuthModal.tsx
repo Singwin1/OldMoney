@@ -33,18 +33,16 @@ export default function AuthModal() {
 
     if (tab === "login") {
       const err = await login(email, password);
-      if (err === "invalid") {
-        setError(t.errorInvalid);
+      if (err) {
+        setError(err);
       } else {
         reset();
         closeAuth();
       }
     } else {
       const err = await register(email, password);
-      if (err === "exists") {
-        setError(t.errorExists);
-      } else if (err === "error") {
-        setError(lang === "cs" ? "Chyba registrace. Zkuste znovu." : "Registration error. Please try again.");
+      if (err) {
+        setError(err);
       } else {
         reset();
         closeAuth();

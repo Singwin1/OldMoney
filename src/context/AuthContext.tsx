@@ -13,8 +13,8 @@ export type User = { id: string; email: string; tier: Tier };
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<"invalid" | null>;
-  register: (email: string, password: string) => Promise<"exists" | "error" | null>;
+  login: (email: string, password: string) => Promise<string | null>;
+  register: (email: string, password: string) => Promise<string | null>;
   logout: () => Promise<void>;
   upgradeToAtelier: () => Promise<void>;
   authOpen: boolean;
@@ -76,25 +76,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (
     email: string,
     password: string
-  ): Promise<"invalid" | null> => {
+  ): Promise<string | null> => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return "invalid";
+    if (error) return error.message;
     return null;
   };
 
   const register = async (
     email: string,
     password: string
-  ): Promise<"exists" | "error" | null> => {
+  ): Promise<string | null> => {
     const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      if (
-        error.message.toLowerCase().includes("already registered") ||
-        error.message.toLowerCase().includes("already exists")
-      )
-        return "exists";
-      return "error";
-    }
+    if (error) return error.message;
     return null;
   };
 
