@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, type Tier } from "../context/AuthContext";
@@ -15,39 +15,44 @@ const TIER_ORDER: Tier[] = ["free", "atelier", "concierge"];
 
 export default function AdminPage() {
   const navigate = useNavigate();
-  const { user, getAllUsers, setUserTier, deleteUser } = useAuth();
+  const { user, loading, getAllUsers, setUserTier, deleteUser } = useAuth();
   const [users, setUsers] = useState<UserRow[]>([]);
+  const [fetching, setFetching] = useState(true);
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user || user.tier !== "concierge") {
+    if (!loading && (!user || user.tier !== "concierge")) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
-  useEffect(() => {
-    setUsers(getAllUsers().sort((a, b) => b.registeredAt - a.registeredAt));
+  const fetchUsers = useCallback(async () => {
+    setFetching(true);
+    const all = await getAllUsers();
+    setUsers(all.sort((a, b) => b.registeredAt - a.registeredAt));
+    setFetching(false);
   }, [getAllUsers]);
 
-  const refresh = () =>
-    setUsers(getAllUsers().sort((a, b) => b.registeredAt - a.registeredAt));
+  useEffect(() => {
+    if (user?.tier === "concierge") fetchUsers();
+  }, [user, fetchUsers]);
 
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
   };
 
-  const handleTierChange = (email: string, tier: Tier) => {
-    setUserTier(email, tier);
-    refresh();
+  const handleTierChange = async (email: string, tier: Tier) => {
+    await setUserTier(email, tier);
+    await fetchUsers();
     showToast(`${email} → ${tier}`);
   };
 
-  const handleDelete = (email: string) => {
-    if (!confirm(`Smazat účet ${email}?`)) return;
-    deleteUser(email);
-    refresh();
+  const handleDelete = async (email: string) => {
+    if (!confirm(`Smazat profil ${email}?`)) return;
+    await deleteUser(email);
+    await fetchUsers();
     showToast(`${email} smazán`);
   };
 
@@ -62,7 +67,7 @@ export default function AdminPage() {
     concierge: users.filter((u) => u.tier === "concierge").length,
   };
 
-  if (!user || user.tier !== "concierge") return null;
+  if (loading || !user || user.tier !== "concierge") return null;
 
   return (
     <div className="min-h-screen bg-ivory px-6 py-16 sm:px-10">
@@ -81,7 +86,7 @@ export default function AdminPage() {
               ZPĚT
             </button>
             <h1 className="font-serif-display text-4xl text-navy">Admin panel</h1>
-            <p className="mt-1 text-sm text-charcoal/50">Správa uživatelů a tierů</p>
+            <p className="mt-1 text-sm text-charcoal/50">Správa uživatelů · {user.email}</p>
           </div>
           <span className="rounded-full bg-navy/8 px-4 py-2 text-xs tracking-[0.12em] text-navy">
             CONCIERGE
@@ -96,10 +101,7 @@ export default function AdminPage() {
             { label: "Atelier", value: counts.atelier },
             { label: "Concierge", value: counts.concierge },
           ].map((s) => (
-            <div
-              key={s.label}
-              className="rounded-2xl border border-charcoal/10 bg-cream/50 px-6 py-5"
-            >
+            <div key={s.label} className="rounded-2xl border border-charcoal/10 bg-cream/50 px-6 py-5">
               <p className="text-xs tracking-[0.1em] text-charcoal/45">{s.label.toUpperCase()}</p>
               <p className="mt-1 font-serif-display text-3xl text-navy">{s.value}</p>
             </div>
@@ -121,87 +123,90 @@ export default function AdminPage() {
               className="w-full rounded-xl border border-charcoal/12 bg-cream/40 py-3 pl-10 pr-4 text-sm text-charcoal outline-none focus:border-camel focus:ring-1 focus:ring-camel/25"
             />
           </div>
+          <button
+            type="button"
+            onClick={fetchUsers}
+            className="rounded-xl border border-charcoal/12 bg-cream/40 px-4 py-3 text-xs tracking-[0.1em] text-charcoal/50 transition-colors hover:text-navy"
+          >
+            ↻
+          </button>
           <span className="text-xs text-charcoal/40">{filtered.length} uživatelů</span>
         </div>
 
         {/* Table */}
         <div className="overflow-hidden rounded-2xl border border-charcoal/10 bg-white/60 shadow-sm">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-charcoal/8 bg-cream/60">
-                <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">E-MAIL</th>
-                <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">REGISTRACE</th>
-                <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">TIER</th>
-                <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">AKCE</th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence>
-                {filtered.map((u, i) => (
-                  <motion.tr
-                    key={u.email}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: i * 0.03 }}
-                    className="border-b border-charcoal/6 last:border-0 hover:bg-cream/30 transition-colors"
-                  >
-                    <td className="px-6 py-4 text-charcoal/80">{u.email}</td>
-                    <td className="px-6 py-4 text-charcoal/40 text-xs">
-                      {u.registeredAt
-                        ? new Date(u.registeredAt).toLocaleDateString("cs-CZ")
-                        : "—"}
-                    </td>
-                    <td className="px-6 py-4">
-                      <select
-                        value={u.tier}
-                        onChange={(e) =>
-                          handleTierChange(u.email, e.target.value as Tier)
-                        }
-                        className={`rounded-full border-0 px-3 py-1 text-xs tracking-[0.08em] outline-none cursor-pointer ${TIER_COLORS[u.tier]}`}
-                      >
-                        {TIER_ORDER.map((t) => (
-                          <option key={t} value={t}>
-                            {t === "free" ? "Capsule (free)" : t.charAt(0).toUpperCase() + t.slice(1)}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        {TIER_ORDER.filter((t) => t !== u.tier).map((t) => (
-                          <button
-                            key={t}
-                            type="button"
-                            onClick={() => handleTierChange(u.email, t)}
-                            className="rounded-full border border-charcoal/12 px-3 py-1 text-[10px] tracking-[0.1em] text-charcoal/45 transition-colors hover:border-camel hover:text-navy"
-                          >
-                            → {t}
-                          </button>
-                        ))}
-                        {u.email !== "kozielmatyas@gmail.com" && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(u.email)}
-                            className="rounded-full border border-transparent px-2 py-1 text-[10px] text-charcoal/25 transition-colors hover:border-burgundy/30 hover:text-burgundy"
-                          >
-                            ✕
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-sm text-charcoal/35">
-                    Žádní uživatelé
-                  </td>
+          {fetching ? (
+            <div className="flex items-center justify-center py-16 text-sm text-charcoal/35">
+              Načítám…
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-charcoal/8 bg-cream/60">
+                  <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">E-MAIL</th>
+                  <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">REGISTRACE</th>
+                  <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">TIER</th>
+                  <th className="px-6 py-4 text-left text-[10px] tracking-[0.14em] text-charcoal/45 font-medium">ZMĚNIT</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <AnimatePresence>
+                  {filtered.map((u, i) => (
+                    <motion.tr
+                      key={u.email}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ delay: i * 0.03 }}
+                      className="border-b border-charcoal/6 last:border-0 hover:bg-cream/30 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-charcoal/80">{u.email}</td>
+                      <td className="px-6 py-4 text-charcoal/40 text-xs">
+                        {u.registeredAt
+                          ? new Date(u.registeredAt).toLocaleDateString("cs-CZ")
+                          : "—"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`rounded-full px-3 py-1 text-xs tracking-[0.08em] ${TIER_COLORS[u.tier]}`}>
+                          {u.tier === "free" ? "Capsule" : u.tier.charAt(0).toUpperCase() + u.tier.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-2">
+                          {TIER_ORDER.filter((t) => t !== u.tier).map((t) => (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={() => handleTierChange(u.email, t)}
+                              className="rounded-full border border-charcoal/12 px-3 py-1 text-[10px] tracking-[0.1em] text-charcoal/45 transition-colors hover:border-camel hover:text-navy"
+                            >
+                              → {t}
+                            </button>
+                          ))}
+                          {u.email !== "kozielmatyas@gmail.com" && (
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(u.email)}
+                              className="rounded-full border border-transparent px-2 py-1 text-[10px] text-charcoal/25 transition-colors hover:border-burgundy/30 hover:text-burgundy"
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+                {filtered.length === 0 && !fetching && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-12 text-center text-sm text-charcoal/35">
+                      Žádní uživatelé
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 

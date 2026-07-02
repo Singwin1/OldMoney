@@ -61,8 +61,8 @@ export default function PaymentPage() {
 
     // Demo: simulate payment → upgrade tier
     setStep("paying");
-    setTimeout(() => {
-      upgradeToAtelier();
+    setTimeout(async () => {
+      await upgradeToAtelier();
       setStep("success");
     }, 1800);
   };

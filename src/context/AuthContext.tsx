@@ -1,148 +1,126 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { supabase } from "../lib/supabase";
 
 export type Tier = "free" | "atelier" | "concierge";
-export type User = { email: string; tier: Tier };
-
-type StoredEntry = { password: string; tier: Tier; registeredAt: number };
-type StoredUsers = Record<string, StoredEntry>;
+export type User = { id: string; email: string; tier: Tier };
 
 type AuthContextValue = {
   user: User | null;
-  login: (email: string, password: string) => "invalid" | null;
-  register: (email: string, password: string) => "exists" | null;
-  logout: () => void;
-  upgradeToAtelier: () => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<"invalid" | null>;
+  register: (email: string, password: string) => Promise<"exists" | "error" | null>;
+  logout: () => Promise<void>;
+  upgradeToAtelier: () => Promise<void>;
   authOpen: boolean;
   openAuth: () => void;
   closeAuth: () => void;
   // admin
-  getAllUsers: () => Array<{ email: string; tier: Tier; registeredAt: number }>;
-  setUserTier: (email: string, tier: Tier) => void;
-  deleteUser: (email: string) => void;
+  getAllUsers: () => Promise<Array<{ email: string; tier: Tier; registeredAt: number }>>;
+  setUserTier: (email: string, tier: Tier) => Promise<void>;
+  deleteUser: (email: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue);
 
-const KEY_USERS = "om_users";
-const KEY_SESSION = "om_session";
-
-const DEV_SEEDS: StoredUsers = {
-  "kozielmatyas@gmail.com": {
-    password: "M4ts0n3k420!!",
-    tier: "concierge",
-    registeredAt: 1704067200000,
-  },
-};
-
-function getUsers(): StoredUsers {
-  try {
-    const stored = JSON.parse(
-      localStorage.getItem(KEY_USERS) ?? "{}"
-    ) as StoredUsers;
-    let changed = false;
-    for (const [email, seed] of Object.entries(DEV_SEEDS)) {
-      if (!stored[email]) {
-        stored[email] = seed;
-        changed = true;
-      }
-    }
-    if (changed) localStorage.setItem(KEY_USERS, JSON.stringify(stored));
-    return stored;
-  } catch {
-    localStorage.setItem(KEY_USERS, JSON.stringify(DEV_SEEDS));
-    return { ...DEV_SEEDS };
-  }
-}
-
-function saveUsers(users: StoredUsers) {
-  localStorage.setItem(KEY_USERS, JSON.stringify(users));
-}
-
-function getSession(): User | null {
-  try {
-    const raw = localStorage.getItem(KEY_SESSION);
-    return raw ? (JSON.parse(raw) as User) : null;
-  } catch {
-    return null;
-  }
-}
-
-function saveSession(user: User) {
-  localStorage.setItem(KEY_SESSION, JSON.stringify(user));
+async function fetchTier(id: string): Promise<Tier> {
+  const { data } = await supabase
+    .from("user_profiles")
+    .select("tier")
+    .eq("id", id)
+    .single();
+  return (data?.tier as Tier) ?? "free";
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(getSession);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [authOpen, setAuthOpen] = useState(false);
 
-  const login = (email: string, password: string): "invalid" | null => {
-    const users = getUsers();
-    const stored = users[email.toLowerCase()];
-    if (!stored || stored.password !== password) return "invalid";
-    const session: User = { email: email.toLowerCase(), tier: stored.tier };
-    setUser(session);
-    saveSession(session);
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        const tier = await fetchTier(session.user.id);
+        setUser({ id: session.user.id, email: session.user.email!, tier });
+      }
+      setLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        const tier = await fetchTier(session.user.id);
+        setUser({ id: session.user.id, email: session.user.email!, tier });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<"invalid" | null> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return "invalid";
     return null;
   };
 
-  const register = (email: string, password: string): "exists" | null => {
-    const users = getUsers();
-    const key = email.toLowerCase();
-    if (users[key]) return "exists";
-    users[key] = { password, tier: "free", registeredAt: Date.now() };
-    saveUsers(users);
-    const session: User = { email: key, tier: "free" };
-    setUser(session);
-    saveSession(session);
+  const register = async (
+    email: string,
+    password: string
+  ): Promise<"exists" | "error" | null> => {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      if (
+        error.message.toLowerCase().includes("already registered") ||
+        error.message.toLowerCase().includes("already exists")
+      )
+        return "exists";
+      return "error";
+    }
     return null;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem(KEY_SESSION);
   };
 
-  const upgradeToAtelier = () => {
-    if (!user) return;
-    const users = getUsers();
-    const entry = users[user.email];
-    if (!entry) return;
-    if (entry.tier === "concierge") return;
-    entry.tier = "atelier";
-    saveUsers(users);
-    const session: User = { email: user.email, tier: "atelier" };
-    setUser(session);
-    saveSession(session);
+  const upgradeToAtelier = async () => {
+    if (!user || user.tier !== "free") return;
+    await supabase.rpc("upgrade_to_atelier", { user_id: user.id });
+    setUser({ ...user, tier: "atelier" });
   };
 
-  const getAllUsers = () => {
-    const users = getUsers();
-    return Object.entries(users).map(([email, entry]) => ({
-      email,
-      tier: entry.tier,
-      registeredAt: entry.registeredAt ?? 0,
+  const getAllUsers = async () => {
+    const { data } = await supabase
+      .from("user_profiles")
+      .select("email, tier, created_at")
+      .order("created_at", { ascending: false });
+    return (data ?? []).map((u) => ({
+      email: u.email as string,
+      tier: u.tier as Tier,
+      registeredAt: new Date(u.created_at as string).getTime(),
     }));
   };
 
-  const setUserTier = (email: string, tier: Tier) => {
-    const users = getUsers();
-    if (!users[email]) return;
-    users[email].tier = tier;
-    saveUsers(users);
-    // update current session if it's the same user
-    if (user?.email === email) {
-      const session: User = { email, tier };
-      setUser(session);
-      saveSession(session);
-    }
+  const setUserTier = async (email: string, tier: Tier) => {
+    await supabase.from("user_profiles").update({ tier }).eq("email", email);
+    if (user?.email === email) setUser({ ...user, tier });
   };
 
-  const deleteUser = (email: string) => {
-    if (email === "kozielmatyas@gmail.com") return; // protect dev account
-    const users = getUsers();
-    delete users[email];
-    saveUsers(users);
-    if (user?.email === email) logout();
+  const deleteUser = async (email: string) => {
+    if (email === "kozielmatyas@gmail.com") return;
+    await supabase.from("user_profiles").delete().eq("email", email);
   };
 
   const openAuth = () => setAuthOpen(true);
@@ -152,6 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        loading,
         login,
         register,
         logout,

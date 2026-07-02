@@ -13,6 +13,7 @@ export default function AuthModal() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const reset = () => {
     setEmail("");
@@ -25,11 +26,13 @@ export default function AuthModal() {
     setError(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSubmitting(true);
+
     if (tab === "login") {
-      const err = login(email, password);
+      const err = await login(email, password);
       if (err === "invalid") {
         setError(t.errorInvalid);
       } else {
@@ -37,14 +40,17 @@ export default function AuthModal() {
         closeAuth();
       }
     } else {
-      const err = register(email, password);
+      const err = await register(email, password);
       if (err === "exists") {
         setError(t.errorExists);
+      } else if (err === "error") {
+        setError(lang === "cs" ? "Chyba registrace. Zkuste znovu." : "Registration error. Please try again.");
       } else {
         reset();
         closeAuth();
       }
     }
+    setSubmitting(false);
   };
 
   return (
@@ -142,9 +148,16 @@ export default function AuthModal() {
 
               <motion.button
                 type="submit"
+                disabled={submitting}
                 whileTap={{ scale: 0.97 }}
-                className="mt-2 rounded-full bg-navy py-3 text-xs tracking-[0.14em] text-ivory transition-colors hover:bg-navy/85"
+                className="mt-2 flex items-center justify-center gap-2 rounded-full bg-navy py-3 text-xs tracking-[0.14em] text-ivory transition-colors hover:bg-navy/85 disabled:opacity-60"
               >
+                {submitting ? (
+                  <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                ) : null}
                 {tab === "login" ? t.loginCta : t.registerCta}
               </motion.button>
             </form>
