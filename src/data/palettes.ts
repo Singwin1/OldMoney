@@ -277,4 +277,346 @@ export const palettes: Palette[] = [
       { name: "Fog", hex: "#d1d5db" },
     ],
   },
+
+  // ── 20 PREMIUM PALETTES ──────────────────────────────────────────────────
+  {
+    id: "st-moritz",
+    name: "St. Moritz",
+    tagline: "Alpský sníh, chalet a šampaňské",
+    taglineEn: "Alpine snow, chalet and champagne",
+    description:
+      "Ledovcová bílá, alpská modrá a zlatá — luxus švýcarského lyžařského střediska v každém detailu.",
+    descriptionEn:
+      "Glacial white, alpine blue and gold — the luxury of a Swiss ski resort in every detail.",
+    swatches: [
+      { name: "Alpine", hex: "#2b4a7a" },
+      { name: "Snow", hex: "#f7f9fc" },
+      { name: "Champagne", hex: "#d4b896" },
+      { name: "Caramel", hex: "#b07840" },
+      { name: "Charcoal", hex: "#2a2724" },
+    ],
+  },
+  {
+    id: "portofino",
+    name: "Portofino",
+    tagline: "Barevné fasády, jachty a pesto",
+    taglineEn: "Coloured facades, yachts and pesto",
+    description:
+      "Žlutá okr, tyrkys a korálová — živost ligurského rybářského přístavu v lehkém italském střihu.",
+    descriptionEn:
+      "Yellow ochre, turquoise and coral — the vivacity of a Ligurian fishing harbour in light Italian cut.",
+    swatches: [
+      { name: "Ochre", hex: "#d4a843" },
+      { name: "Turquoise", hex: "#3a9f9f" },
+      { name: "Coral", hex: "#d4735a" },
+      { name: "Ivory", hex: "#faf7f0" },
+      { name: "Navy", hex: "#1b2a3d" },
+    ],
+  },
+  {
+    id: "london-club",
+    name: "London Club",
+    tagline: "Pall Mall, kožené křeslo a brandy",
+    taglineEn: "Pall Mall, leather armchair and brandy",
+    description:
+      "Tmavě zelená, mahagon a zlatavá — atmosféra exkluzivního gentlemen's clubu.",
+    descriptionEn:
+      "Dark green, mahogany and amber — the atmosphere of an exclusive gentlemen's club.",
+    swatches: [
+      { name: "Club Green", hex: "#1e3d2a" },
+      { name: "Mahogany", hex: "#5c2e1a" },
+      { name: "Amber", hex: "#c8843a" },
+      { name: "Cream", hex: "#f0ead8" },
+      { name: "Charcoal", hex: "#2a2724" },
+    ],
+  },
+  {
+    id: "amalfi-coast",
+    name: "Amalfi Coast",
+    tagline: "Útesy, citróny a modré moře",
+    taglineEn: "Cliffs, lemons and the blue sea",
+    description:
+      "Citrónová žlutá, azurová a bílá — dramatická krása amalfijského pobřeží v každém dotyku.",
+    descriptionEn:
+      "Lemon yellow, azure and white — the dramatic beauty of the Amalfi coast in every touch.",
+    swatches: [
+      { name: "Lemon", hex: "#e8c84a" },
+      { name: "Azure", hex: "#3a7abf" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Terracotta", hex: "#c97a5a" },
+      { name: "Olive", hex: "#6b7c3f" },
+    ],
+  },
+  {
+    id: "normandy-manor",
+    name: "Normandy Manor",
+    tagline: "Normandské sídlo, jablečný mošt a mlha",
+    taglineEn: "Norman manor, cider and morning mist",
+    description:
+      "Šedá břidlice, krémová a teplá zelená — utišená elegance francouzského venkova.",
+    descriptionEn:
+      "Grey slate, cream and warm green — the quieted elegance of the French countryside.",
+    swatches: [
+      { name: "Slate", hex: "#5a6a7a" },
+      { name: "Cream", hex: "#ede8da" },
+      { name: "Apple Green", hex: "#5a7a45" },
+      { name: "Stone", hex: "#9a8e7c" },
+      { name: "Navy", hex: "#1b2a3d" },
+    ],
+  },
+  {
+    id: "geneva-lake",
+    name: "Geneva Lake",
+    tagline: "Jezerní Ženeva, hodinky a čistota",
+    taglineEn: "Lake Geneva, timepieces and clarity",
+    description:
+      "Ledová modrá, platinová a bílá — švýcarská přesnost vtělená do nekompromisního střihu.",
+    descriptionEn:
+      "Ice blue, platinum and white — Swiss precision embodied in uncompromising tailoring.",
+    swatches: [
+      { name: "Ice", hex: "#b8d4e8" },
+      { name: "Platinum", hex: "#c8cfd8" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Navy", hex: "#1b2a3d" },
+      { name: "Camel", hex: "#b08d57" },
+    ],
+  },
+  {
+    id: "nantucket-grey",
+    name: "Nantucket Grey",
+    tagline: "Šindele, hortenzie a atlantický vítr",
+    taglineEn: "Shingles, hydrangeas and Atlantic wind",
+    description:
+      "Zvětralá šedá, modrošedá a bílá — střídmost starých rodin Nové Anglie.",
+    descriptionEn:
+      "Weathered grey, blue-grey and white — the restraint of old New England families.",
+    swatches: [
+      { name: "Shingle", hex: "#8a8e92" },
+      { name: "Hydrangea", hex: "#7a8fad" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Driftwood", hex: "#9a8870" },
+      { name: "Navy", hex: "#1b2a3d" },
+    ],
+  },
+  {
+    id: "marrakech-dusk",
+    name: "Marrakech Dusk",
+    tagline: "Souk, mosaz a soumrak medíny",
+    taglineEn: "Souk, brass and medina dusk",
+    description:
+      "Hřejivá okrová, terakota a zlatá pod severoafrickým soumrakem — exotika s aristokratickým klidem.",
+    descriptionEn:
+      "Warm ochre, terracotta and gold under a North African dusk — exotic with aristocratic calm.",
+    swatches: [
+      { name: "Saffron", hex: "#d4882a" },
+      { name: "Terracotta", hex: "#b85a3a" },
+      { name: "Gold", hex: "#c8963a" },
+      { name: "Ivory", hex: "#f5edd8" },
+      { name: "Espresso", hex: "#2a1f1a" },
+    ],
+  },
+  {
+    id: "biarritz-blue",
+    name: "Biarritz Blue",
+    tagline: "Baskické pobřeží, surf a Belle Époque",
+    taglineEn: "Basque coast, surf and Belle Époque",
+    description:
+      "Tmavá námořnická, červená a bílá baskické vlajky — elegance v rytmu atlantického příboje.",
+    descriptionEn:
+      "Deep navy, Basque red and white — elegance in the rhythm of the Atlantic surf.",
+    swatches: [
+      { name: "Navy", hex: "#1b2a3d" },
+      { name: "Basque Red", hex: "#a82832" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Sand", hex: "#e0c99a" },
+      { name: "Camel", hex: "#b08d57" },
+    ],
+  },
+  {
+    id: "positano-sunset",
+    name: "Positano Sunset",
+    tagline: "Růžové útesy, bougainvillea a modrá hlubina",
+    taglineEn: "Blush cliffs, bougainvillea and deep blue",
+    description:
+      "Starorůžová, kobaltová a zlatá v italském podání — západ slunce nad Tyrhénským mořem.",
+    descriptionEn:
+      "Dusty rose, cobalt and gold in an Italian rendering — sunset over the Tyrrhenian Sea.",
+    swatches: [
+      { name: "Blush", hex: "#d4927a" },
+      { name: "Cobalt", hex: "#2a5aad" },
+      { name: "Gold", hex: "#c8a040" },
+      { name: "Ivory", hex: "#faf7f0" },
+      { name: "Olive", hex: "#6b7c3f" },
+    ],
+  },
+  {
+    id: "newport-prep",
+    name: "Newport Prep",
+    tagline: "Rhode Island, regaty a seersucker",
+    taglineEn: "Rhode Island, regattas and seersucker",
+    description:
+      "Námořnická modrá, bílá a červená v americkém preppy podání — tradice Ivy League u moře.",
+    descriptionEn:
+      "Navy, white and red in American preppy fashion — Ivy League tradition by the sea.",
+    swatches: [
+      { name: "Navy", hex: "#1b2a3d" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Red", hex: "#a82828" },
+      { name: "Khaki", hex: "#c9a679" },
+      { name: "Grass", hex: "#3a6e3a" },
+    ],
+  },
+  {
+    id: "lake-como",
+    name: "Lake Como",
+    tagline: "Jezero Como, vily a hedbáví",
+    taglineEn: "Lake Como, villas and silk",
+    description:
+      "Jezerní zelená, azur a slonovinová — italská lehkost letních prázdnin na jezeře Como.",
+    descriptionEn:
+      "Lake green, azure and ivory — Italian lightness of summer holidays on Lake Como.",
+    swatches: [
+      { name: "Lake", hex: "#3a7a6e" },
+      { name: "Azure", hex: "#4a8fbd" },
+      { name: "Ivory", hex: "#faf7f0" },
+      { name: "Caramel", hex: "#b07840" },
+      { name: "Blush", hex: "#d4a090" },
+    ],
+  },
+  {
+    id: "bermuda-blush",
+    name: "Bermuda Blush",
+    tagline: "Růžové pláže, pastely a koloniální elegance",
+    taglineEn: "Pink sands, pastels and colonial elegance",
+    description:
+      "Korálová, šalvějová a bílá — ostrovní lehkost bermudského souostroví.",
+    descriptionEn:
+      "Coral, sage and white — the island lightness of the Bermuda archipelago.",
+    swatches: [
+      { name: "Coral", hex: "#d4816a" },
+      { name: "Sage", hex: "#7a9a7a" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Blush", hex: "#e0a898" },
+      { name: "Navy", hex: "#1b2a3d" },
+    ],
+  },
+  {
+    id: "aspen-lodge",
+    name: "Aspen Lodge",
+    tagline: "Horský chalet, kašmír a borové dřevo",
+    taglineEn: "Mountain lodge, cashmere and pine",
+    description:
+      "Tabáková hnědá, smetanová a hluboká modrá — přepych horského útulku v amerických Skalnatých horách.",
+    descriptionEn:
+      "Tobacco brown, cream and deep blue — the luxury of a mountain retreat in the American Rockies.",
+    swatches: [
+      { name: "Tobacco", hex: "#7a4e2a" },
+      { name: "Cream", hex: "#f0e8d8" },
+      { name: "Pine", hex: "#2e4a30" },
+      { name: "Caramel", hex: "#b07840" },
+      { name: "Charcoal", hex: "#2a2724" },
+    ],
+  },
+  {
+    id: "kyoto-autumn",
+    name: "Kyoto Autumn",
+    tagline: "Javorová zákoutí a chrámové zahrady",
+    taglineEn: "Maple alcoves and temple gardens",
+    description:
+      "Ohnivá červená, zlatá a indigová — japonský podzim přeložený do nadčasového střihu.",
+    descriptionEn:
+      "Fiery red, gold and indigo — Japanese autumn translated into timeless tailoring.",
+    swatches: [
+      { name: "Maple", hex: "#c84a28" },
+      { name: "Gold", hex: "#c8a040" },
+      { name: "Indigo", hex: "#2a3a6a" },
+      { name: "Cream", hex: "#f5edd8" },
+      { name: "Charcoal", hex: "#2a2724" },
+    ],
+  },
+  {
+    id: "antibes-garden",
+    name: "Antibes Garden",
+    tagline: "Zahrada Cap d'Antibes, levandule a cypřiše",
+    taglineEn: "Cap d'Antibes garden, lavender and cypress",
+    description:
+      "Bledě fialová, šalvějová a slonovinová — zahradní ráj mezi levandulí a středomořskými bylinami.",
+    descriptionEn:
+      "Pale violet, sage and ivory — a garden paradise between lavender and Mediterranean herbs.",
+    swatches: [
+      { name: "Violet", hex: "#8a7aad" },
+      { name: "Sage", hex: "#7a9a7a" },
+      { name: "Ivory", hex: "#faf7f0" },
+      { name: "Lavender", hex: "#b0a4c8" },
+      { name: "Stone", hex: "#9a8e7c" },
+    ],
+  },
+  {
+    id: "edinburgh-grey",
+    name: "Edinburgh Grey",
+    tagline: "Kamenné ulice, whiskys a šedé ráno",
+    taglineEn: "Stone streets, whisky and grey mornings",
+    description:
+      "Tmavě šedá, burgundy a zlatá — skotská metropole v celé své dramatické kráse.",
+    descriptionEn:
+      "Dark grey, burgundy and gold — the Scottish capital in all its dramatic beauty.",
+    swatches: [
+      { name: "Granite", hex: "#4a4e58" },
+      { name: "Burgundy", hex: "#6a2838" },
+      { name: "Amber", hex: "#c89040" },
+      { name: "Cream", hex: "#ede8da" },
+      { name: "Charcoal", hex: "#2a2724" },
+    ],
+  },
+  {
+    id: "rio-golden",
+    name: "Rio Golden",
+    tagline: "Zlaté písky, karneval a tropická noc",
+    taglineEn: "Golden sands, carnival and tropical night",
+    description:
+      "Teplá zlatá, bronzová a bílá — brazilský přepych v lehkých texturách a elegantním střihu.",
+    descriptionEn:
+      "Warm gold, bronze and white — Brazilian luxury in light textures and elegant cut.",
+    swatches: [
+      { name: "Gold", hex: "#d4a030" },
+      { name: "Bronze", hex: "#a06830" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Ivory", hex: "#f5edd8" },
+      { name: "Espresso", hex: "#2a1f1a" },
+    ],
+  },
+  {
+    id: "black-forest",
+    name: "Black Forest",
+    tagline: "Temný les, mlha a středoevropský klid",
+    taglineEn: "Dark forest, mist and Central European calm",
+    description:
+      "Téměř černá, mechová zelená a zlatá — mračná atmosféra Schwarzwaldu přeložená do střihu.",
+    descriptionEn:
+      "Near-black, moss green and gold — the brooding atmosphere of the Schwarzwald rendered in tailoring.",
+    swatches: [
+      { name: "Midnight", hex: "#1a1f1a" },
+      { name: "Moss", hex: "#4a5a3a" },
+      { name: "Amber", hex: "#c89040" },
+      { name: "Cream", hex: "#ede8da" },
+      { name: "Stone", hex: "#7a7a6a" },
+    ],
+  },
+  {
+    id: "capri-blue",
+    name: "Capri Blue",
+    tagline: "Grotta Azzurra, limoncello a klid",
+    taglineEn: "Grotta Azzurra, limoncello and stillness",
+    description:
+      "Kobaltová modrá, citrónová a bílá — ikonický ostrov v Neapolském zálivu v celé své kráse.",
+    descriptionEn:
+      "Cobalt blue, lemon and white — the iconic island in the Bay of Naples in its full splendour.",
+    swatches: [
+      { name: "Cobalt", hex: "#1a4aad" },
+      { name: "Lemon", hex: "#e8c840" },
+      { name: "White", hex: "#fefefe" },
+      { name: "Aqua", hex: "#4ab5c0" },
+      { name: "Navy", hex: "#1b2a3d" },
+    ],
+  },
 ];
