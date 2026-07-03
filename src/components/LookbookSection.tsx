@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLang } from "../context/LanguageContext";
 import { translations } from "../data/translations";
 import { lookbook, lookbookImgUrl } from "../data/lookbook";
 import { FREE_PALETTE_IDS } from "../data/palettes";
+
+// A fixed set of preview photos shown on palettes without their own lookbook
+const PREVIEW_IDS = [
+  "1602792474659-274fd5a2b784",
+  "1614822180018-0620b4250ed1",
+  "1573570076683-b3b495f6b339",
+];
 
 type Props = {
   activePaletteId: string;
@@ -14,19 +22,28 @@ type Props = {
 export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
   const { user } = useAuth();
   const { lang } = useLang();
+  const navigate = useNavigate();
   const t = translations[lang].lookbook;
 
   const [lightbox, setLightbox] = useState<string | null>(null);
 
-  const photos = lookbook[activePaletteId] ?? [];
+  const palettePhotos = lookbook[activePaletteId];
+  const hasOwnPhotos = Boolean(palettePhotos && palettePhotos.length > 0);
+
+  // For palettes without dedicated photos, show preview (blurred) as upsell
+  const photos = hasOwnPhotos
+    ? palettePhotos!
+    : PREVIEW_IDS.map((id) => ({ photoId: id, unsplashPageId: "" }));
+
   const isLocked =
     !FREE_PALETTE_IDS.has(activePaletteId) &&
     (!user || user.tier === "free");
 
-  if (photos.length === 0) return null;
+  // Show locked/teaser UI: either palette is locked OR has no own photos yet
+  const showTeaser = isLocked || !hasOwnPhotos;
 
   return (
-    <section className="bg-cream/30 px-6 py-20 sm:px-10 lg:px-16">
+    <section id="lookbook" className="bg-cream/30 px-6 py-20 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-10">
@@ -39,14 +56,16 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
           </p>
         </div>
 
-        {/* Locked overlay */}
-        {isLocked ? (
+        {showTeaser ? (
+          /* Blurred teaser + CTA */
           <div className="relative overflow-hidden rounded-2xl">
-            {/* Blurred preview */}
-            <div className="grid grid-cols-3 gap-3 blur-sm select-none pointer-events-none" aria-hidden="true">
-              {photos.map((p) => (
+            <div
+              className="grid grid-cols-3 gap-3 blur-sm select-none pointer-events-none"
+              aria-hidden="true"
+            >
+              {photos.map((p, i) => (
                 <div
-                  key={p.photoId}
+                  key={p.photoId + i}
                   className="aspect-[3/4] overflow-hidden rounded-xl bg-charcoal/10"
                 >
                   <img
@@ -59,7 +78,6 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
               ))}
             </div>
 
-            {/* Lock overlay */}
             <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-ivory/80 backdrop-blur-[2px]">
               <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-camel/12">
                 <svg viewBox="0 0 20 20" fill="none" className="h-7 w-7 text-camel">
@@ -70,13 +88,20 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
               <p className="max-w-xs text-center text-sm leading-relaxed text-charcoal/65">
                 {t.locked}
               </p>
-              <button
+              <motion.button
                 type="button"
-                onClick={onUnlock}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  if (!user) {
+                    onUnlock();
+                  } else if (user.tier === "free") {
+                    navigate("/platba");
+                  }
+                }}
                 className="mt-6 rounded-full bg-navy px-8 py-3 text-xs tracking-[0.14em] text-ivory transition-colors hover:bg-navy/85"
               >
                 {t.unlockCta}
-              </button>
+              </motion.button>
             </div>
           </div>
         ) : (
@@ -91,7 +116,9 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   className="group aspect-[3/4] overflow-hidden rounded-xl bg-charcoal/8 focus:outline-none focus-visible:ring-2 focus-visible:ring-camel"
-                  onClick={() => setLightbox(lookbookImgUrl(p.photoId, 1200, 1600))}
+                  onClick={() =>
+                    setLightbox(lookbookImgUrl(p.photoId, 1200, 1600))
+                  }
                   aria-label={`Otevřít foto ${i + 1}`}
                 >
                   <img
@@ -109,14 +136,18 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
               {t.credit} ·{" "}
               {photos.map((p, i) => (
                 <span key={p.photoId}>
-                  <a
-                    href={`https://unsplash.com/photos/${p.unsplashPageId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-charcoal/55"
-                  >
-                    {i + 1}
-                  </a>
+                  {p.unsplashPageId ? (
+                    <a
+                      href={`https://unsplash.com/photos/${p.unsplashPageId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-charcoal/55"
+                    >
+                      {i + 1}
+                    </a>
+                  ) : (
+                    <span>{i + 1}</span>
+                  )}
                   {i < photos.length - 1 && ", "}
                 </span>
               ))}
