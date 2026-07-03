@@ -72,7 +72,6 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
                     src={lookbookImgUrl(p.photoId)}
                     alt=""
                     className="h-full w-full object-cover"
-                    loading="lazy"
                   />
                 </div>
               ))}
@@ -124,7 +123,6 @@ export default function LookbookSection({ activePaletteId, onUnlock }: Props) {
                   <img
                     src={lookbookImgUrl(p.photoId)}
                     alt={`Outfit inspirace ${i + 1}`}
-                    loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </motion.button>
