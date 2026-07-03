@@ -111,6 +111,15 @@ export const translations = {
       lockedBody: "Tato paleta je součástí tarifu Atelier. Přihlaste se nebo si vytvořte účet.",
       unlock: "ODEMKNOUT",
     },
+    lookbook: {
+      eyebrow: "LOOKBOOK",
+      title: "Inspirace",
+      body: "Tři editoriální snímky, které ilustrují náladu palety. Nechte se inspirovat a sestavte svůj vlastní look.",
+      credit: "Foto: Unsplash",
+      locked: "Lookbook je součástí tarifu Atelier. Odemkněte plný přístup a inspirujte se editoriálními snímky pro každou paletu.",
+      unlockCta: "ODEMKNOUT ATELIER",
+      noPalette: "Pro tuto paletu zatím nejsou k dispozici lookbook snímky.",
+    },
     footer: {
       tagline:
         "Tichý luxus se nehlásí o slovo. Jde o materiál, střih a barvy, které vydrží déle než trend.",
@@ -252,6 +261,15 @@ export const translations = {
       lockedTitle: "Atelier Palette",
       lockedBody: "This palette is part of the Atelier tier. Sign in or create an account.",
       unlock: "UNLOCK",
+    },
+    lookbook: {
+      eyebrow: "LOOKBOOK",
+      title: "Inspiration",
+      body: "Three editorial images that illustrate the mood of this palette. Let them inspire your own look.",
+      credit: "Photos: Unsplash",
+      locked: "The lookbook is part of the Atelier tier. Unlock full access and get inspired by editorial imagery for every palette.",
+      unlockCta: "UNLOCK ATELIER",
+      noPalette: "No lookbook images available for this palette yet.",
     },
     footer: {
       tagline:

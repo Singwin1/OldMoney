@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 import QuickBuilder from "./components/QuickBuilder";
 import PaletteGallery from "./components/PaletteGallery";
 import OutfitStyler from "./components/OutfitStyler";
+import LookbookSection from "./components/LookbookSection";
 import Membership from "./components/Membership";
 import ConciergeSection from "./components/ConciergeSection";
 import Footer from "./components/Footer";
@@ -13,7 +14,7 @@ import PaymentPage from "./pages/PaymentPage";
 import AdminPage from "./pages/AdminPage";
 import { palettes } from "./data/palettes";
 import { LanguageProvider } from "./context/LanguageContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -53,6 +54,7 @@ class ErrorBoundary extends Component<
 
 function MainPage() {
   const [activePaletteId, setActivePaletteId] = useState(palettes[0].id);
+  const { openAuth } = useAuth();
 
   return (
     <div className="min-h-screen bg-ivory">
@@ -66,6 +68,10 @@ function MainPage() {
       <OutfitStyler
         activePaletteId={activePaletteId}
         onSelectPalette={setActivePaletteId}
+      />
+      <LookbookSection
+        activePaletteId={activePaletteId}
+        onUnlock={openAuth}
       />
       <Membership />
       <ConciergeSection />
