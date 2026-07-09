@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import QuickBuilder from "./components/QuickBuilder";
-import PaletteGallery from "./components/PaletteGallery";
+import ColorWheelPicker from "./components/ColorWheelPicker";
 import OutfitStyler from "./components/OutfitStyler";
 import LookbookSection from "./components/LookbookSection";
 import Membership from "./components/Membership";
@@ -61,7 +61,7 @@ function MainPage() {
       <Navbar />
       <Hero />
       <QuickBuilder />
-      <PaletteGallery
+      <ColorWheelPicker
         activePaletteId={activePaletteId}
         onSelect={setActivePaletteId}
       />

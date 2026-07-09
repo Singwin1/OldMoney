@@ -111,6 +111,15 @@ export const translations = {
       lockedBody: "Tato paleta je součástí tarifu Atelier. Přihlaste se nebo si vytvořte účet.",
       unlock: "ODEMKNOUT",
     },
+    colorWheel: {
+      eyebrow: "BAREVNÉ PALETY",
+      title: "Vyberte svou barvu",
+      body: "Klepněte na kolečko a zvolte barvu — palety se okamžitě seřadí dle barevné shody.",
+      hint: "Klepněte na kolečko\na vyberte barvu",
+      sortedBy: "SEŘAZENO DLE BAREVNÉ SHODY",
+      bestMatch: "NEJLEPŠÍ SHODA",
+      allPalettes: "VŠECHNY PALETY",
+    },
     lookbook: {
       eyebrow: "LOOKBOOK",
       title: "Inspirace",
@@ -261,6 +270,15 @@ export const translations = {
       lockedTitle: "Atelier Palette",
       lockedBody: "This palette is part of the Atelier tier. Sign in or create an account.",
       unlock: "UNLOCK",
+    },
+    colorWheel: {
+      eyebrow: "COLOR PALETTES",
+      title: "Pick your color",
+      body: "Tap the wheel to pick a color — palettes instantly rank by how well they match.",
+      hint: "Tap the wheel\nto pick a color",
+      sortedBy: "SORTED BY COLOR MATCH",
+      bestMatch: "BEST MATCH",
+      allPalettes: "ALL PALETTES",
     },
     lookbook: {
       eyebrow: "LOOKBOOK",
