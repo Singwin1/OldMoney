@@ -58,10 +58,10 @@ const ALL_COLORS: SwatchItem[] = (() => {
 const OUTER_COLORS = ALL_COLORS.filter((_, i) => i % 3 !== 2);
 const INNER_COLORS = ALL_COLORS.filter((_, i) => i % 3 === 2);
 
-const CX = 146;
-const CY = 146;
-const OUTER_R = 122;
-const INNER_R = 74;
+const CX = 170;
+const CY = 170;
+const OUTER_R = 150;
+const INNER_R = 92;
 
 function ringXY(total: number, radius: number, index: number) {
   const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
@@ -165,7 +165,7 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
           <div className="flex flex-col items-center gap-4 shrink-0">
             <div
               className="relative"
-              style={{ width: 292, height: 292 }}
+              style={{ width: 340, height: 340 }}
               role="group"
               aria-label={t.hint.replace("\n", " ")}
             >
@@ -173,10 +173,10 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
               <div
                 className="absolute rounded-full pointer-events-none"
                 style={{
-                  width: INNER_R * 2 - 30,
-                  height: INNER_R * 2 - 30,
-                  left: CX - (INNER_R - 15),
-                  top: CY - (INNER_R - 15),
+                  width: INNER_R * 2 - 36,
+                  height: INNER_R * 2 - 36,
+                  left: CX - (INNER_R - 18),
+                  top: CY - (INNER_R - 18),
                   background: pickedHex
                     ? `radial-gradient(circle, ${pickedHex}22 0%, transparent 70%)`
                     : "radial-gradient(circle, rgba(27,42,61,0.04) 0%, transparent 70%)",
@@ -186,12 +186,12 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
 
               {/* Inner ring */}
               {INNER_COLORS.map((sw, i) =>
-                renderDot(sw, i, INNER_COLORS.length, INNER_R, 18, "inner")
+                renderDot(sw, i, INNER_COLORS.length, INNER_R, 22, "inner")
               )}
 
               {/* Outer ring */}
               {OUTER_COLORS.map((sw, i) =>
-                renderDot(sw, i, OUTER_COLORS.length, OUTER_R, 21, "outer")
+                renderDot(sw, i, OUTER_COLORS.length, OUTER_R, 26, "outer")
               )}
             </div>
 
