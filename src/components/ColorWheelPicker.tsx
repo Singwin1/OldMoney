@@ -24,33 +24,52 @@ function hexToHsl(hex: string): [number, number, number] {
   return [h, s * 100, l * 100];
 }
 
-// Collect unique swatch colors from all palettes, sorted for display
-function buildColorGrid() {
-  const seen = new Map<string, string>(); // hex -> name
-  for (const palette of palettes) {
-    for (const sw of palette.swatches) {
+// RGB range < 30 → achromatic (greys, creams, blacks, whites)
+function isAchromatic(hex: string): boolean {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return Math.max(r, g, b) - Math.min(r, g, b) < 30;
+}
+
+type SwatchItem = { hex: string; name: string };
+
+// Build sorted color list: achromatics dark→light first, then chromatics by hue.
+// Achromatics anchor the top of the circle; the hue spectrum unfolds clockwise.
+const ALL_COLORS: SwatchItem[] = (() => {
+  const seen = new Map<string, string>();
+  for (const p of palettes) {
+    for (const sw of p.swatches) {
       if (!seen.has(sw.hex)) seen.set(sw.hex, sw.name);
     }
   }
-
-  const achromatic: { hex: string; name: string }[] = [];
-  const chromatic: { hex: string; name: string }[] = [];
-
+  const achromatic: SwatchItem[] = [];
+  const chromatic: SwatchItem[] = [];
   for (const [hex, name] of seen) {
-    const [, s] = hexToHsl(hex);
-    if (s < 12) achromatic.push({ hex, name });
-    else chromatic.push({ hex, name });
+    (isAchromatic(hex) ? achromatic : chromatic).push({ hex, name });
   }
-
-  // Darks → lights for achromatics
   achromatic.sort((a, b) => hexToHsl(a.hex)[2] - hexToHsl(b.hex)[2]);
-  // By hue for chromatics
   chromatic.sort((a, b) => hexToHsl(a.hex)[0] - hexToHsl(b.hex)[0]);
-
   return [...achromatic, ...chromatic];
-}
+})();
 
-const COLOR_GRID = buildColorGrid();
+// 2:1 interleave → outer ring gets ~2/3, inner ring ~1/3.
+// Both rings cover the full spectrum from achromatics through the full hue circle.
+const OUTER_COLORS = ALL_COLORS.filter((_, i) => i % 3 !== 2);
+const INNER_COLORS = ALL_COLORS.filter((_, i) => i % 3 === 2);
+
+const CX = 146;
+const CY = 146;
+const OUTER_R = 122;
+const INNER_R = 74;
+
+function ringXY(total: number, radius: number, index: number) {
+  const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
+  return {
+    x: CX + radius * Math.cos(angle),
+    y: CY + radius * Math.sin(angle),
+  };
+}
 
 type Props = {
   activePaletteId: string;
@@ -81,9 +100,51 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
     [pickedHex]
   );
 
+  const pickColor = (hex: string, name: string) => {
+    setPickedHex(hex);
+    setPickedName(name);
+  };
+
   const clearColor = () => {
     setPickedHex(null);
     setPickedName(null);
+  };
+
+  const renderDot = (
+    { hex, name }: SwatchItem,
+    i: number,
+    total: number,
+    radius: number,
+    size: number,
+    ringKey: string
+  ) => {
+    const { x, y } = ringXY(total, radius, i);
+    const isSelected = pickedHex === hex;
+    const [, , l] = hexToHsl(hex);
+    return (
+      <motion.button
+        key={`${ringKey}-${hex}`}
+        type="button"
+        whileTap={{ scale: 0.78 }}
+        onClick={() => (isSelected ? clearColor() : pickColor(hex, name))}
+        title={name}
+        aria-label={name}
+        aria-pressed={isSelected}
+        className="absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-camel"
+        style={{
+          width: size,
+          height: size,
+          left: x - size / 2,
+          top: y - size / 2,
+          backgroundColor: hex,
+          zIndex: isSelected ? 10 : 1,
+          boxShadow: isSelected
+            ? `0 0 0 2px white, 0 0 0 4px ${hex}, 0 2px 8px rgba(0,0,0,0.22)`
+            : `0 0 0 1px ${l > 75 ? "rgba(0,0,0,0.15)" : "rgba(255,255,255,0.4)"}, 0 1px 3px rgba(0,0,0,0.10)`,
+          transition: "box-shadow 0.15s ease",
+        }}
+      />
+    );
   };
 
   return (
@@ -100,46 +161,41 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
         </SectionReveal>
 
         <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-12">
-          {/* ── Color dot grid ──────────────────────────────── */}
+          {/* ── Color wheel (2 concentric rings) ──────────── */}
           <div className="flex flex-col items-center gap-4 shrink-0">
             <div
-              className="grid gap-2"
-              style={{ gridTemplateColumns: "repeat(8, 2.25rem)" }}
+              className="relative"
+              style={{ width: 292, height: 292 }}
               role="group"
               aria-label={t.hint.replace("\n", " ")}
             >
-              {COLOR_GRID.map(({ hex, name }) => {
-                const isSelected = pickedHex === hex;
-                const [, , l] = hexToHsl(hex);
-                const ringColor = l > 70 ? "rgba(0,0,0,0.20)" : "rgba(255,255,255,0.55)";
-                return (
-                  <motion.button
-                    key={hex}
-                    type="button"
-                    whileTap={{ scale: 0.85 }}
-                    onClick={() => {
-                      if (isSelected) clearColor();
-                      else {
-                        setPickedHex(hex);
-                        setPickedName(name);
-                      }
-                    }}
-                    title={name}
-                    aria-label={name}
-                    aria-pressed={isSelected}
-                    className="h-9 w-9 rounded-full transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-camel"
-                    style={{
-                      backgroundColor: hex,
-                      boxShadow: isSelected
-                        ? `0 0 0 2.5px white, 0 0 0 4.5px ${hex}, 0 2px 10px rgba(0,0,0,0.2)`
-                        : `0 0 0 1px ${ringColor}, 0 1px 3px rgba(0,0,0,0.08)`,
-                    }}
-                  />
-                );
-              })}
+              {/* Subtle center indicator */}
+              <div
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  width: INNER_R * 2 - 30,
+                  height: INNER_R * 2 - 30,
+                  left: CX - (INNER_R - 15),
+                  top: CY - (INNER_R - 15),
+                  background: pickedHex
+                    ? `radial-gradient(circle, ${pickedHex}22 0%, transparent 70%)`
+                    : "radial-gradient(circle, rgba(27,42,61,0.04) 0%, transparent 70%)",
+                  transition: "background 0.3s ease",
+                }}
+              />
+
+              {/* Inner ring */}
+              {INNER_COLORS.map((sw, i) =>
+                renderDot(sw, i, INNER_COLORS.length, INNER_R, 18, "inner")
+              )}
+
+              {/* Outer ring */}
+              {OUTER_COLORS.map((sw, i) =>
+                renderDot(sw, i, OUTER_COLORS.length, OUTER_R, 21, "outer")
+              )}
             </div>
 
-            {/* Selected color chip / hint */}
+            {/* Selected color chip */}
             <AnimatePresence mode="wait">
               {pickedHex ? (
                 <motion.div
@@ -227,18 +283,11 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
                         : "border-charcoal/10 bg-cream/20 hover:border-camel/35 hover:bg-cream/40"
                     }`}
                   >
-                    {/* Swatch bar */}
                     <div className="flex h-10 w-14 shrink-0 overflow-hidden rounded-lg">
                       {palette.swatches.map((sw) => (
-                        <div
-                          key={sw.hex}
-                          className="h-full flex-1"
-                          style={{ backgroundColor: sw.hex }}
-                        />
+                        <div key={sw.hex} className="h-full flex-1" style={{ backgroundColor: sw.hex }} />
                       ))}
                     </div>
-
-                    {/* Text */}
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-serif-display text-[15px] leading-tight text-navy">
                         {palette.name}
@@ -247,8 +296,6 @@ export default function ColorWheelPicker({ activePaletteId, onSelect }: Props) {
                         {tagline}
                       </p>
                     </div>
-
-                    {/* Right badges */}
                     <div className="flex shrink-0 items-center gap-1.5">
                       {pickedHex && idx === 0 && (
                         <span className="hidden rounded-full bg-camel/15 px-2 py-0.5 text-[9px] tracking-[0.12em] text-camel sm:inline-block">
